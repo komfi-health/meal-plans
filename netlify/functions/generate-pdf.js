@@ -19,7 +19,7 @@ const htmlTemplate = `<!DOCTYPE html>
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
         .client-name { font-size: 24pt; font-weight: 300; }
         .meta-info { text-align: right; font-size: 10pt; color: #666; }
-        .days-grid { display: grid; grid-template-columns: repeat({{daysPerRow}}, 1fr); gap: 15px; margin-bottom: 30px; }
+        .days-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
         .day-card { border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; min-height: 220px; background: #fff; display: flex; flex-direction: column; justify-content: flex-start; }
         .day-header { background: #f8f8f8; padding: 8px 15px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; }
         .meal-section { padding: 12px 15px; margin-bottom: 0; }
