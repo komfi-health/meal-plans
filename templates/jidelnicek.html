@@ -203,7 +203,7 @@
                 {{#each days}}
                 <tr>
                     <td><b>{{this.den}}</b></td>
-                    {{#each ../mealTypes}}
+                    {{#each ../../mealTypes}}
                     <td>
                         {{#with (lookup ../this.meals this.key)}}
                             {{#if title}}

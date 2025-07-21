@@ -512,3 +512,8 @@ function transformDataForTemplate(menuData) {
     templateType
   };
 }
+
+// Před kompilací šablony:
+handlebars.registerHelper('isEven', function(index) {
+  return index % 2 === 0;
+});
