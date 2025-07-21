@@ -162,6 +162,8 @@
                 page-break-after: always;
             }
         }
+        .bg-light { background: #f8f8f8; }
+        .bg-dark { background: #e0e0e0; }
     </style>
 </head>
 <body>
@@ -188,59 +190,34 @@
             {{/each}}
         </div>
         {{else}}
-        {{!-- Složitější varianta: více typů jídel --}}
-        <table class="meal-table">
-            <thead>
-                <tr>
-                    <th>Den</th>
-                    {{#each mealTypes}}
-                    <th>{{this.label}}</th>
-                    <th>Příprava</th>
-                    {{/each}}
-                </tr>
-            </thead>
-            <tbody>
-                {{#each days}}
-                <tr>
-                    <td><b>{{this.den}}</b></td>
-                    {{#each ../../mealTypes}}
-                    <td>
-                        {{#with (lookup ../this.meals this.key)}}
-                            {{#if title}}
-                                <div class="meal-type-label">{{../this.label}}</div>
-                                <div><b>{{title}}</b></div>
-                                {{#if image}}
-                                <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
-                                {{/if}}
-                                <ul class="meal-items">
-                                    {{#each items}}
-                                    <li>{{this.pomer}} {{this.nazev}}</li>
-                                    {{/each}}
-                                </ul>
-                            {{else}}
-                                {{#if items.length}}
-                                    <div class="meal-type-label">{{../this.label}}</div>
-                                    <ul class="meal-items">
-                                        {{#each items}}
-                                        <li>{{this.pomer}} {{this.nazev}}</li>
-                                        {{/each}}
-                                    </ul>
-                                {{/if}}
-                            {{/if}}
-                        {{/with}}
-                    </td>
-                    <td>
-                        {{#with (lookup ../this.meals this.key)}}
-                            {{#if instructions}}
-                            <div class="instructions">{{instructions}}</div>
-                            {{/if}}
-                        {{/with}}
-                    </td>
-                    {{/each}}
-                </tr>
+        <div class="days-grid">
+            {{#each days}}
+            <div class="day-card">
+                <div class="day-header">DEN {{this.den}}</div>
+                {{#each ../../mealTypes}}
+                <div class="meal-section {{#if (isEven @index)}}bg-light{{else}}bg-dark{{/if}}">
+                    <div class="meal-type-label">{{this.label}}</div>
+                    {{#with (lookup ../this.meals this.key)}}
+                        {{#if title}}
+                        <div><b>{{title}}</b></div>
+                        {{/if}}
+                        {{#if image}}
+                        <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
+                        {{/if}}
+                        <ul class="meal-items">
+                            {{#each items}}
+                            <li>{{this.pomer}} {{this.nazev}}</li>
+                            {{/each}}
+                        </ul>
+                        {{#if instructions}}
+                        <div class="instructions">{{instructions}}</div>
+                        {{/if}}
+                    {{/with}}
+                </div>
                 {{/each}}
-            </tbody>
-        </table>
+            </div>
+            {{/each}}
+        </div>
         {{/if}}
         
         <div class="footer">
