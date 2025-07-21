@@ -23,6 +23,8 @@ const htmlTemplate = `<!DOCTYPE html>
         .day-card { border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; min-height: 220px; background: #fff; display: flex; flex-direction: column; justify-content: flex-start; }
         .day-header { background: #f8f8f8; padding: 8px 15px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; }
         .meal-section { padding: 12px 15px; margin-bottom: 0; }
+        .meal-section:nth-child(odd) { background: #f8f8f8; }
+        .meal-section:nth-child(even) { background: #e0e0e0; }
         .bg-light { background: #f8f8f8; }
         .bg-dark { background: #e0e0e0; }
         .meal-type-label { font-size: 9pt; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
@@ -54,7 +56,7 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
                 {{#each ../../mealTypes}}
-                <div class="meal-section {{#if (isEven @index)}}bg-light{{else}}bg-dark{{/if}}">
+                <div class="meal-section">
                     <div class="meal-type-label">{{this.label}}</div>
                     {{#with (lookup ../this.meals this.key)}}
                         {{#if title}}
@@ -337,8 +339,3 @@ function transformDataForTemplate(menuData) {
     templateType
   };
 }
-
-// Před kompilací šablony:
-handlebars.registerHelper('isEven', function(index) {
-  return index % 2 === 0;
-});
