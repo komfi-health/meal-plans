@@ -206,18 +206,20 @@
                     {{#each ../mealTypes}}
                     <td>
                         {{#with (lookup ../this.meals this.key)}}
-                            <div class="meal-type-label">{{../this.label}}</div>
-                            {{#if title}}
-                            <div><b>{{title}}</b></div>
+                            {{#if (or title (items.length))}}
+                                <div class="meal-type-label">{{../this.label}}</div>
+                                {{#if title}}
+                                <div><b>{{title}}</b></div>
+                                {{/if}}
+                                {{#if image}}
+                                <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
+                                {{/if}}
+                                <ul class="meal-items">
+                                    {{#each items}}
+                                    <li>{{this.pomer}} {{this.nazev}}</li>
+                                    {{/each}}
+                                </ul>
                             {{/if}}
-                            {{#if image}}
-                            <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
-                            {{/if}}
-                            <ul class="meal-items">
-                                {{#each items}}
-                                <li>{{this.pomer}} {{this.nazev}}</li>
-                                {{/each}}
-                            </ul>
                         {{/with}}
                     </td>
                     <td>
