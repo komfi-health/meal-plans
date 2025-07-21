@@ -57,9 +57,9 @@ const htmlTemplate = `<!DOCTYPE html>
                 <div class="meal-section">
                     <div class="meal-type-label">{{this.label}}</div>
                     {{#with (lookup ../this.meals this.key)}}
-                        {{#if title}}
+                        {{#unless hideSingleItem}}
                         <div><b>{{title}}</b></div>
-                        {{/if}}
+                        {{/unless}}
                         {{#if image}}
                         <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
                         {{/if}}
@@ -287,19 +287,17 @@ function transformDataForTemplate(menuData) {
       instructions: item['Instrukce'] || '',
       image: imageUrl
     };
-    // Pokud už existuje, přidat do pole
+    // Uložit do struktury
     if (!dayGroups[den].meals[typ]) {
       dayGroups[den].meals[typ] = { items: [], image: imageUrl, instructions: item['Instrukce'] || '', title: '' };
     }
     dayGroups[den].meals[typ].items.push(polozka);
-    // Pokud ještě není nastaven obrázek/instrukce, nastav z prvního záznamu
     if (!dayGroups[den].meals[typ].image && imageUrl) {
       dayGroups[den].meals[typ].image = imageUrl;
     }
     if (!dayGroups[den].meals[typ].instructions && item['Instrukce']) {
       dayGroups[den].meals[typ].instructions = item['Instrukce'];
     }
-    // Pokud je vyplněn Název jídla a ještě není title, nastav ho
     if (item['Název jídla'] && !dayGroups[den].meals[typ].title) {
       dayGroups[den].meals[typ].title = item['Název jídla'];
     }
@@ -309,10 +307,16 @@ function transformDataForTemplate(menuData) {
     .sort((a, b) => a.den - b.den)
     .slice(0, daysCount)
     .map(day => {
-      // Zajistit, že pro každý den jsou všechny typy jídel z konfigurace
       mealTypes.forEach(mt => {
         if (!day.meals[mt.key]) {
           day.meals[mt.key] = { items: [], image: null, instructions: '', title: '' };
+        }
+        // Přidej flag hideSingleItem
+        const m = day.meals[mt.key];
+        if (m.items && m.items.length === 1 && m.title && m.items[0].nazev === m.title) {
+          m.hideSingleItem = true;
+        } else {
+          m.hideSingleItem = false;
         }
       });
       return day;
