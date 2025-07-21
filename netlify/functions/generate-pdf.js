@@ -89,10 +89,9 @@ const htmlTemplate = `<!DOCTYPE html>
             margin-bottom: 5px;
         }
         
-        .meal-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            line-height: 1.3;
+        .meal-content {
+            display: flex;
+            gap: 10px;
         }
         
         .meal-image {
@@ -100,9 +99,17 @@ const htmlTemplate = `<!DOCTYPE html>
             height: 80px;
             border-radius: 8px;
             object-fit: cover;
-            float: left;
-            margin-right: 15px;
-            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        
+        .meal-details {
+            flex: 1;
+        }
+        
+        .meal-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
         
         .meal-items {
@@ -131,7 +138,6 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         
         .instructions {
-            clear: both;
             margin-top: 10px;
             padding: 10px;
             background: #fafafa;
@@ -220,113 +226,27 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
                 
-                {{#if ../showMeals.S}}
-                {{#if this.snidane}}
-                <!-- Snídaně -->
-                <div class="meal-section">
-                    <div class="meal-type">Snídaně</div>
-                    {{#if this.snidaneImage}}
-                    <img src="{{this.snidaneImage}}" alt="{{this.snidane}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.snidane}}</div>
-                    <ul class="meal-items">
-                        {{#each this.snidanePolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#if this.snidaneInstrukce}}
-                    <div class="instructions">{{this.snidaneInstrukce}}</div>
-                    {{/if}}
-                </div>
-                <div class="divider"></div>
-                {{/if}}
-                {{/if}}
-                
-                {{#if ../showMeals.SV1}}
-                {{#if this.svacina1}}
-                <!-- Dopolední svačina -->
-                <div class="meal-section">
-                    <div class="meal-type">Dopolední svačina</div>
-                    {{#if this.svacina1Image}}
-                    <img src="{{this.svacina1Image}}" alt="{{this.svacina1}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.svacina1}}</div>
-                    <ul class="meal-items">
-                        {{#each this.svacina1Polozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#if this.svacina1Instrukce}}
-                    <div class="instructions">{{this.svacina1Instrukce}}</div>
-                    {{/if}}
-                </div>
-                <div class="divider"></div>
-                {{/if}}
-                {{/if}}
-                
-                {{#if ../showMeals.O}}
                 {{#if this.obed}}
                 <!-- Oběd -->
                 <div class="meal-section">
                     <div class="meal-type">Oběd</div>
-                    {{#if this.obedImage}}
-                    <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.obed}}</div>
-                    <ul class="meal-items">
-                        {{#each this.obedPolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#if this.obedInstrukce}}
-                    <div class="instructions">{{this.obedInstrukce}}</div>
-                    {{/if}}
+                    <div class="meal-content">
+                        {{#if this.obedImage}}
+                        <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
+                        {{/if}}
+                        <div class="meal-details">
+                            <div class="meal-title">{{this.obed}}</div>
+                            <ul class="meal-items">
+                                {{#each this.obedPolozky}}
+                                <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                                {{/each}}
+                            </ul>
+                            {{#if this.obedInstrukce}}
+                            <div class="instructions">{{this.obedInstrukce}}</div>
+                            {{/if}}
+                        </div>
+                    </div>
                 </div>
-                {{/if}}
-                {{/if}}
-                
-                {{#if ../showMeals.SV2}}
-                {{#if this.svacina2}}
-                <div class="divider"></div>
-                <!-- Odpolední svačina -->
-                <div class="meal-section">
-                    <div class="meal-type">Odpolední svačina</div>
-                    {{#if this.svacina2Image}}
-                    <img src="{{this.svacina2Image}}" alt="{{this.svacina2}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.svacina2}}</div>
-                    <ul class="meal-items">
-                        {{#each this.svacina2Polozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#if this.svacina2Instrukce}}
-                    <div class="instructions">{{this.svacina2Instrukce}}</div>
-                    {{/if}}
-                </div>
-                {{/if}}
-                {{/if}}
-                
-                {{#if ../showMeals.V}}
-                {{#if this.vecere}}
-                <div class="divider"></div>
-                <!-- Večeře -->
-                <div class="meal-section">
-                    <div class="meal-type">Večeře</div>
-                    {{#if this.vecereImage}}
-                    <img src="{{this.vecereImage}}" alt="{{this.vecere}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.vecere}}</div>
-                    <ul class="meal-items">
-                        {{#each this.vecerePolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#if this.vecereInstrukce}}
-                    <div class="instructions">{{this.vecereInstrukce}}</div>
-                    {{/if}}
-                </div>
-                {{/if}}
                 {{/if}}
             </div>
             {{/each}}
@@ -469,16 +389,17 @@ function transformDataForTemplate(menuData) {
   const dayGroups = {};
   
   // Získat typ šablony z prvního záznamu
-  const templateType = menuData[0]?.['Template'] || '5x0';
+  const templateType = menuData[0]?.['Template'] || '5x-O';
   console.log('Typ šablony:', templateType);
   
-  // Rozpoznat, která jídla zobrazit podle typu šablony
+  // Rozpoznat, která jídla zobrazit podle typu šablony (ignorovat x- nebo x)
+  const templateClean = templateType.replace(/x-?/g, '');
   const showMeals = {
-    S: templateType.includes('S'),
-    SV1: templateType.includes('SV1'),
-    O: templateType.includes('O'),
-    SV2: templateType.includes('SV2'),
-    V: templateType.includes('V')
+    S: templateClean.includes('S'),
+    SV1: templateClean.includes('SV1'),
+    O: templateClean.includes('O'),
+    SV2: templateClean.includes('SV2'),
+    V: templateClean.includes('V')
   };
   
   menuData.forEach(item => {
@@ -486,46 +407,14 @@ function transformDataForTemplate(menuData) {
     if (!dayGroups[den]) {
       dayGroups[den] = {
         den: den,
-        // Inicializace podle typu šablony
-        snidanePolozky: [],
-        svacina1Polozky: [],
         obedPolozky: [],
-        svacina2Polozky: [],
-        vecerePolozky: [],
-        snidane: '',
-        svacina1: '',
         obed: '',
-        svacina2: '',
-        vecere: '',
-        snidaneImage: null,
-        svacina1Image: null,
         obedImage: null,
-        svacina2Image: null,
-        vecereImage: null,
-        snidaneInstrukce: null,
-        svacina1Instrukce: null,
-        obedInstrukce: null,
-        svacina2Instrukce: null,
-        vecereInstrukce: null
+        obedInstrukce: null
       };
     }
     
     const nazevJidla = item['Název jídla'] || '';
-    const nazevLower = nazevJidla.toLowerCase();
-    
-    // Rozpoznání typu jídla
-    let mealType = null;
-    if (nazevLower.includes('snídaně') || nazevLower.includes('snidane')) {
-      mealType = 'snidane';
-    } else if (nazevLower.includes('svačina 1') || nazevLower.includes('dopolední svačina')) {
-      mealType = 'svacina1';
-    } else if (nazevLower.includes('oběd') || nazevLower.includes('obed')) {
-      mealType = 'obed';
-    } else if (nazevLower.includes('svačina 2') || nazevLower.includes('odpolední svačina')) {
-      mealType = 'svacina2';
-    } else if (nazevLower.includes('večeře') || nazevLower.includes('vecere')) {
-      mealType = 'vecere';
-    }
     
     // Zpracování obrázku
     const imagePath = item['@image'];
@@ -539,21 +428,12 @@ function transformDataForTemplate(menuData) {
       }
     }
     
-    // Přiřazení dat podle typu jídla
-    if (mealType) {
-      // Název jídla bez prefixu
-      const cleanName = nazevJidla
-        .replace(/^(SNÍDANĚ|SVAČINA 1|OBĚD|SVAČINA 2|VEČEŘE)\s*/i, '')
-        .trim();
-      
-      dayGroups[den][mealType] = cleanName;
-      
+    // Pro šablonu pouze s obědy (5x-O) považujeme všechna jídla za obědy
+    if (showMeals.O && !showMeals.V && !showMeals.S) {
+      // Pouze obědy v šabloně
+      dayGroups[den].obed = nazevJidla;
       if (imageUrl) {
-        dayGroups[den][mealType + 'Image'] = imageUrl;
-      }
-      
-      if (item['Instrukce']) {
-        dayGroups[den][mealType + 'Instrukce'] = item['Instrukce'];
+        dayGroups[den].obedImage = imageUrl;
       }
       
       if (item['Položka']) {
@@ -561,8 +441,28 @@ function transformDataForTemplate(menuData) {
           nazev: item['Položka'],
           pomer: item['Poměr'] || '1'
         };
-        dayGroups[den][mealType + 'Polozky'].push(polozka);
+        dayGroups[den].obedPolozky.push(polozka);
       }
+      
+      if (item['Instrukce']) {
+        dayGroups[den].obedInstrukce = item['Instrukce'];
+      }
+    }
+    // Pro ostatní šablony rozpoznáváme podle názvu
+    else {
+      const nazevLower = nazevJidla.toLowerCase();
+      
+      if (nazevLower.includes('snídaně') || nazevLower.includes('snidane')) {
+        dayGroups[den].snidane = nazevJidla;
+        if (imageUrl) dayGroups[den].snidaneImage = imageUrl;
+      } else if (nazevLower.includes('oběd') || nazevLower.includes('obed')) {
+        dayGroups[den].obed = nazevJidla;
+        if (imageUrl) dayGroups[den].obedImage = imageUrl;
+      } else if (nazevLower.includes('večeře') || nazevLower.includes('vecere')) {
+        dayGroups[den].vecere = nazevJidla;
+        if (imageUrl) dayGroups[den].vecereImage = imageUrl;
+      }
+      // Atd. pro další typy jídel
     }
   });
   
