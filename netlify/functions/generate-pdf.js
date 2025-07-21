@@ -442,4 +442,3 @@ function transformDataForTemplate(menuData) {
     days: days.slice(0, 7) // Max 7 dní
   };
 }
-EOF
