@@ -226,28 +226,27 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
                 
-                {{#if this.obed}}
-                <!-- Oběd -->
+                {{#each this.meals}}
                 <div class="meal-section">
-                    <div class="meal-type">Oběd</div>
+                    <div class="meal-type">{{this.label}}</div>
                     <div class="meal-content">
-                        {{#if this.obedImage}}
-                        <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
+                        {{#if this.image}}
+                        <img src="{{this.image}}" alt="{{this.title}}" class="meal-image">
                         {{/if}}
                         <div class="meal-details">
-                            <div class="meal-title">{{this.obed}}</div>
+                            <div class="meal-title">{{this.title}}</div>
                             <ul class="meal-items">
-                                {{#each this.obedPolozky}}
+                                {{#each this.items}}
                                 <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
                                 {{/each}}
                             </ul>
-                            {{#if this.obedInstrukce}}
-                            <div class="instructions">{{this.obedInstrukce}}</div>
+                            {{#if this.instructions}}
+                            <div class="instructions">{{this.instructions}}</div>
                             {{/if}}
                         </div>
                     </div>
                 </div>
-                {{/if}}
+                {{/each}}
             </div>
             {{/each}}
         </div>
@@ -387,39 +386,41 @@ async function fetchMenuData(recordId, tableName) {
 
 function transformDataForTemplate(menuData) {
   const dayGroups = {};
-  
   // Získat typ šablony z prvního záznamu
   const templateType = menuData[0]?.['Template'] || '5x-O';
-  console.log('Typ šablony:', templateType);
-  
-  // Rozpoznat, která jídla zobrazit podle typu šablony (ignorovat x- nebo x)
-  const templateClean = templateType.replace(/x-?/g, '');
-  const showMeals = {
-    S: templateClean.includes('S'),
-    SV1: templateClean.includes('SV1'),
-    O: templateClean.includes('O'),
-    SV2: templateClean.includes('SV2'),
-    V: templateClean.includes('V')
-  };
-  
+  const match = templateType.match(/(\d+)x([A-Z\-]+)/);
+  const daysCount = match ? parseInt(match[1], 10) : 5;
+  const mealTypeString = match ? match[2] : 'O';
+  // Rozpoznat typy jídel podle šablony
+  const mealTypeOrder = ['S', 'SV1', 'O', 'SV2', 'V'];
+  const mealTypes = mealTypeOrder.filter(t => mealTypeString.includes(t)).map(t => ({
+    key: t,
+    label: t === 'S' ? 'Snídaně' : t === 'SV1' ? 'Dop. svačina' : t === 'O' ? 'Oběd' : t === 'SV2' ? 'Odp. svačina' : 'Večeře'
+  }));
+  const simpleLayout = mealTypes.length === 1;
+  // Seskupit záznamy podle dne a typu jídla
   menuData.forEach(item => {
     const den = item['Den'];
     if (!dayGroups[den]) {
-      dayGroups[den] = {
-        den: den,
-        obedPolozky: [],
-        obed: '',
-        obedImage: null,
-        obedInstrukce: null
-      };
+      dayGroups[den] = { den: den, meals: {} };
     }
-    
-    const nazevJidla = item['Název jídla'] || '';
-    
+    // Nejprve zkusit pole 'Typ jídla', pokud existuje
+    let typ = item['Typ jídla'] || null;
+    // Pokud není, určit typ podle názvu
+    if (!typ) {
+      const nazev = (item['Název jídla'] || '').toLowerCase();
+      if (nazev.includes('snídaně') || nazev.includes('snidane')) typ = 'S';
+      else if (nazev.includes('dopolední svačina') || nazev.includes('dop. svačina') || nazev.includes('sv1')) typ = 'SV1';
+      else if (nazev.includes('oběd') || nazev.includes('obed')) typ = 'O';
+      else if (nazev.includes('odpolední svačina') || nazev.includes('odp. svačina') || nazev.includes('sv2')) typ = 'SV2';
+      else if (nazev.includes('večeře') || nazev.includes('vecere')) typ = 'V';
+    }
+    // Fallback: pokud je v šabloně jen jeden typ jídla, přiřadit vše do něj
+    if (!typ && simpleLayout) typ = mealTypes[0].key;
+    if (!typ) return;
     // Zpracování obrázku
     const imagePath = item['@image'];
     let imageUrl = null;
-    
     if (imagePath) {
       if (!imagePath.includes('/')) {
         imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/${imagePath}`;
@@ -427,48 +428,45 @@ function transformDataForTemplate(menuData) {
         imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
       }
     }
-    
-    // Pro šablonu pouze s obědy (5x-O) považujeme všechna jídla za obědy
-    if (showMeals.O && !showMeals.V && !showMeals.S) {
-      // Pouze obědy v šabloně
-      dayGroups[den].obed = nazevJidla;
-      if (imageUrl) {
-        dayGroups[den].obedImage = imageUrl;
-      }
-      
-      if (item['Položka']) {
-        const polozka = {
-          nazev: item['Položka'],
-          pomer: item['Poměr'] || '1'
-        };
-        dayGroups[den].obedPolozky.push(polozka);
-      }
-      
-      if (item['Instrukce']) {
-        dayGroups[den].obedInstrukce = item['Instrukce'];
-      }
+    // Sestavit položky
+    const polozky = [];
+    if (item['Položka']) {
+      polozky.push({
+        nazev: item['Položka'],
+        pomer: item['Poměr'] || '1'
+      });
     }
-    // Pro ostatní šablony rozpoznáváme podle názvu
-    else {
-      const nazevLower = nazevJidla.toLowerCase();
-      
-      if (nazevLower.includes('snídaně') || nazevLower.includes('snidane')) {
-        dayGroups[den].snidane = nazevJidla;
-        if (imageUrl) dayGroups[den].snidaneImage = imageUrl;
-      } else if (nazevLower.includes('oběd') || nazevLower.includes('obed')) {
-        dayGroups[den].obed = nazevJidla;
-        if (imageUrl) dayGroups[den].obedImage = imageUrl;
-      } else if (nazevLower.includes('večeře') || nazevLower.includes('vecere')) {
-        dayGroups[den].vecere = nazevJidla;
-        if (imageUrl) dayGroups[den].vecereImage = imageUrl;
-      }
-      // Atd. pro další typy jídel
-    }
+    // Uložit do struktury
+    dayGroups[den].meals[typ] = {
+      title: item['Název jídla'] || '',
+      image: imageUrl,
+      items: polozky,
+      instructions: item['Instrukce'] || ''
+    };
   });
-  
-  const days = Object.values(dayGroups).sort((a, b) => a.den - b.den);
+  // Sestavit pole dnů podle pořadí
+  const days = Object.values(dayGroups)
+    .sort((a, b) => a.den - b.den)
+    .slice(0, daysCount)
+    .map(day => {
+      // Zajistit, že pro každý den jsou všechny typy jídel z konfigurace
+      mealTypes.forEach(mt => {
+        if (!day.meals[mt.key]) {
+          day.meals[mt.key] = { title: '', image: null, items: [], instructions: '' };
+        }
+      });
+      return day;
+    });
+  // Pro jednoduché šablony připravit pole meals jako pole (kvůli šabloně)
+  if (simpleLayout) {
+    days.forEach(day => {
+      const typ = mealTypes[0].key;
+      day.meals = [day.meals[typ] || { title: '', image: null, items: [], instructions: '' }];
+    });
+  }
   const firstRecord = menuData[0] || {};
-  
+  // Dynamicky určit počet dní na řádek (max 4 pro tabulky, 2 pro velké karty)
+  const daysPerRow = simpleLayout ? 2 : (daysCount > 4 ? 4 : daysCount);
   return {
     klient: firstRecord['Klient'] || 'Klient',
     idCircuit: firstRecord['ID Circuit'] || '',
@@ -476,8 +474,10 @@ function transformDataForTemplate(menuData) {
     kontaktOsoba: 'Jiří Žilka',
     telefon: '734 602 600',
     email: 'zakaznici@budtekomfi.cz',
-    days: days.slice(0, 7),
-    templateType: templateType,
-    showMeals: showMeals
+    days,
+    mealTypes,
+    simpleLayout,
+    daysPerRow,
+    templateType
   };
 }

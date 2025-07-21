@@ -9,28 +9,18 @@
             size: A4;
             margin: 0;
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
             font-family: Arial, sans-serif;
             font-size: 11pt;
-            line-height: 1.4;
             color: #333;
         }
-        
         .page {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
             padding: 15mm;
-            position: relative;
             background: white;
+            position: relative;
         }
-        
         .header {
             display: flex;
             justify-content: space-between;
@@ -39,107 +29,91 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
         }
-        
         .client-name {
             font-size: 24pt;
             font-weight: 300;
         }
-        
         .meta-info {
             text-align: right;
             font-size: 10pt;
             color: #666;
         }
-        
         .days-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat({{daysPerRow}}, 1fr);
             gap: 15px;
             margin-bottom: 30px;
         }
-        
         .day-card {
             border: 1px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 16px;
             overflow: hidden;
+            min-height: 220px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
-        
         .day-header {
             background: #f8f8f8;
             padding: 8px 15px;
             font-weight: bold;
             color: #555;
+            border-bottom: 1px solid #eee;
         }
-        
-        .meal-section {
-            padding: 15px;
-        }
-        
-        .meal-type {
-            font-size: 9pt;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 5px;
-        }
-        
-        .meal-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-        
-        .meal-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
+        .big-meal-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
             object-fit: cover;
-            float: left;
-            margin-right: 15px;
+            display: block;
+            margin: 20px auto 10px auto;
+        }
+        .big-meal-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
             margin-bottom: 10px;
         }
-        
+        .meal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        .meal-table th, .meal-table td {
+            border: 1px solid #e0e0e0;
+            padding: 6px 8px;
+            font-size: 10pt;
+            vertical-align: top;
+        }
+        .meal-table th {
+            background: #f8f8f8;
+            font-weight: bold;
+            text-align: left;
+        }
+        .meal-type-label {
+            font-size: 9pt;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
         .meal-items {
             list-style: none;
-            font-size: 9pt;
-            line-height: 1.5;
+            padding-left: 0;
+            margin: 0;
         }
-        
         .meal-items li {
-            padding-left: 15px;
-            position: relative;
+            font-size: 9pt;
             color: #666;
         }
-        
-        .meal-items li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #d4a574;
-        }
-        
-        .portion {
-            font-weight: bold;
-            color: #333;
-            margin-right: 5px;
-        }
-        
         .instructions {
-            clear: both;
-            margin-top: 10px;
-            padding: 10px;
+            font-size: 9pt;
+            color: #666;
             background: #fafafa;
             border-radius: 5px;
-            font-size: 9pt;
-            color: #666;
-            line-height: 1.4;
+            padding: 6px 8px;
+            margin-top: 4px;
         }
-        
-        .divider {
-            height: 1px;
-            background: #f0f0f0;
-            margin: 15px 0;
-        }
-        
         .footer {
             position: absolute;
             bottom: 15mm;
@@ -148,48 +122,40 @@
             border-top: 2px solid #f0f0f0;
             padding-top: 15px;
         }
-        
         .contact-info {
             display: flex;
             justify-content: space-between;
             align-items: start;
             margin-bottom: 15px;
         }
-        
         .contact-person {
             font-weight: bold;
             font-size: 12pt;
         }
-        
         .contact-details {
             font-size: 10pt;
             color: #666;
             line-height: 1.5;
         }
-        
         .logo {
             height: 40px;
         }
-        
         .info-boxes {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             font-size: 9pt;
         }
-        
         .info-box {
             padding: 10px;
             background: #f8f8f8;
             border-radius: 5px;
         }
-        
         .info-box h4 {
             margin-bottom: 5px;
             color: #d4a574;
             font-size: 10pt;
         }
-        
         @media print {
             .page {
                 margin: 0;
@@ -208,43 +174,63 @@
             </div>
         </div>
         
+        {{!-- Jednoduchá varianta: pouze jeden typ jídla (např. jen obědy) --}}
+        {{#if simpleLayout}}
         <div class="days-grid">
             {{#each days}}
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
-                
-                <!-- Oběd -->
-                <div class="meal-section">
-                    <div class="meal-type">Oběd</div>
-                    {{#if this.obedImage}}
-                    <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
-                    {{/if}}
-                    <div class="meal-title">{{this.obed}}</div>
-                    <ul class="meal-items">
-                        {{#each this.obedPolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                </div>
-                
-                <div class="divider"></div>
-                
-                <!-- Večeře -->
-                <div class="meal-section">
-                    <div class="meal-type">Večeře</div>
-                    <div class="meal-title">{{this.vecere}}</div>
-                    {{#if this.vecereInstrukce}}
-                    <div class="instructions">{{this.vecereInstrukce}}</div>
-                    {{/if}}
-                    <ul class="meal-items">
-                        {{#each this.vecerePolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
-                </div>
+                {{#if this.meals.[0].image}}
+                <img class="big-meal-image" src="{{this.meals.[0].image}}" alt="{{this.meals.[0].title}}">
+                {{/if}}
+                <div class="big-meal-title">{{this.meals.[0].title}}</div>
             </div>
             {{/each}}
         </div>
+        {{else}}
+        {{!-- Složitější varianta: více typů jídel --}}
+        <table class="meal-table">
+            <thead>
+                <tr>
+                    <th>Den</th>
+                    {{#each mealTypes}}
+                    <th>{{this.label}}</th>
+                    <th>Příprava</th>
+                    {{/each}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#each days}}
+                <tr>
+                    <td><b>{{this.den}}</b></td>
+                    {{#each ../mealTypes}}
+                    <td>
+                        {{#with (lookup ../this.meals this.key)}}
+                            <div class="meal-type-label">{{../this.label}}</div>
+                            {{#if image}}
+                            <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
+                            {{/if}}
+                            <div><b>{{title}}</b></div>
+                            <ul class="meal-items">
+                                {{#each items}}
+                                <li>{{this.pomer}} {{this.nazev}}</li>
+                                {{/each}}
+                            </ul>
+                        {{/with}}
+                    </td>
+                    <td>
+                        {{#with (lookup ../this.meals this.key)}}
+                            {{#if instructions}}
+                            <div class="instructions">{{instructions}}</div>
+                            {{/if}}
+                        {{/with}}
+                    </td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{/if}}
         
         <div class="footer">
             <div class="contact-info">
@@ -257,7 +243,6 @@
                 </div>
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
             </div>
-            
             <div class="info-boxes">
                 <div class="info-box">
                     <h4>ZMĚNY</h4>
