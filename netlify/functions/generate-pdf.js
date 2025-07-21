@@ -1,3 +1,4 @@
+cat > netlify/functions/generate-pdf.js << 'EOF'
 // netlify/functions/generate-pdf.js
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
@@ -391,20 +392,13 @@ function transformDataForTemplate(menuData) {
     const nazevJidla = item['Název jídla'] || '';
     const isObed = nazevJidla.toLowerCase().includes('oběd');
     
-    // Zpracování obrázku z Airtable
-    const imageField = item['fldKt9xsa6KrvmNPI']; // Pole s obrázkem
+    // Zpracování obrázku - pouze z GitHubu podle pole @image
+    const imagePath = item['@image']; // Obsahuje např. "img/023.png"
     let imageUrl = null;
     
-    if (imageField && imageField.length > 0) {
-      // Airtable vrací pole attachmentů
-      imageUrl = imageField[0].url;
-    } else if (item['@image']) {
-      // Pokud existuje číselná reference na obrázek
-      const imageNumber = item['@image'];
-      if (imageNumber) {
-        // Použít obrázek z GitHub repozitáře
-        imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/${imageNumber}.png`;
-      }
+    if (imagePath) {
+      // Vytvořit plnou URL na GitHub
+      imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
     }
     
     if (isObed) {
@@ -449,3 +443,4 @@ function transformDataForTemplate(menuData) {
     days: days.slice(0, 7) // Max 7 dní
   };
 }
+EOF
