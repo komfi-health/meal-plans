@@ -3,17 +3,237 @@ const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
 const handlebars = require('handlebars');
 const Airtable = require('airtable');
-const fs = require('fs').promises;
-const path = require('path');
+
+// HTML šablona přímo v kódu (pro Netlify Functions)
+const htmlTemplate = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jídelníček - {{klient}}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 15mm;
+            position: relative;
+            background: white;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .client-name {
+            font-size: 24pt;
+            font-weight: 300;
+        }
+        
+        .meta-info {
+            text-align: right;
+            font-size: 10pt;
+            color: #666;
+        }
+        
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .day-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .day-header {
+            background: #f8f8f8;
+            padding: 8px 15px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .meal-section {
+            padding: 15px;
+        }
+        
+        .meal-type {
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .meal-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .meal-items {
+            list-style: none;
+            font-size: 9pt;
+            line-height: 1.5;
+        }
+        
+        .meal-items li {
+            padding-left: 15px;
+            position: relative;
+            color: #666;
+        }
+        
+        .meal-items li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #d4a574;
+        }
+        
+        .portion {
+            font-weight: bold;
+            color: #333;
+            margin-right: 5px;
+        }
+        
+        .instructions {
+            clear: both;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 5px;
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 15px 0;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 15mm;
+            right: 15mm;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 15px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        
+        .contact-person {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        
+        .contact-details {
+            font-size: 10pt;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        @media print {
+            .page {
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <div class="client-name">{{klient}}</div>
+            <div class="meta-info">
+                <div>ID {{idCircuit}}</div>
+                <div>Datum donášky {{datumDonaska}}</div>
+            </div>
+        </div>
+        
+        <div class="days-grid">
+            {{#each days}}
+            <div class="day-card">
+                <div class="day-header">DEN {{this.den}}</div>
+                
+                <!-- Oběd -->
+                <div class="meal-section">
+                    <div class="meal-type">Oběd</div>
+                    <div class="meal-title">{{this.obed}}</div>
+                    <ul class="meal-items">
+                        {{#each this.obedPolozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Večeře -->
+                <div class="meal-section">
+                    <div class="meal-type">Večeře</div>
+                    <div class="meal-title">{{this.vecere}}</div>
+                    {{#if this.vecereInstrukce}}
+                    <div class="instructions">{{this.vecereInstrukce}}</div>
+                    {{/if}}
+                    <ul class="meal-items">
+                        {{#each this.vecerePolozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        
+        <div class="footer">
+            <div class="contact-info">
+                <div>
+                    <div class="contact-person">{{kontaktOsoba}}</div>
+                    <div class="contact-details">
+                        {{telefon}}<br>
+                        {{email}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
 
 // Inicializace Airtable
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
-
-// Načtení HTML šablony
-async function loadTemplate() {
-  const templatePath = path.join(__dirname, '../../templates/jidelnicek.html');
-  return await fs.readFile(templatePath, 'utf-8');
-}
 
 exports.handler = async (event, context) => {
   // Pouze POST metoda
@@ -51,7 +271,6 @@ exports.handler = async (event, context) => {
     const templateData = transformDataForTemplate(menuData);
     
     // 3. Kompilace HTML
-    const htmlTemplate = await loadTemplate();
     const template = handlebars.compile(htmlTemplate);
     const html = template(templateData);
     
