@@ -405,9 +405,31 @@ function transformDataForTemplate(menuData) {
     if (!dayGroups[den]) {
       dayGroups[den] = { den: den, meals: {} };
     }
-    // Nejprve zkusit pole 'Typ jídla', pokud existuje
+    // Nejprve zkusit pole 'Typ jídla', pak 'Typ Barva', pak podle názvu
     let typ = item['Typ jídla'] || null;
-    // Pokud není, určit typ podle názvu
+    // Mapování českých názvů na interní klíče
+    const typBarvaMap = {
+      'Snídaně': 'S',
+      'Dop. svačina': 'SV1',
+      'Oběd': 'O',
+      'Odp. svačina': 'SV2',
+      'Večeře': 'V',
+      '🟡 Snídaně': 'S',
+      '🟠 Odp. svačina': 'SV2',
+      '🟣 Oběd': 'O',
+      '🟢 Dop. svačina': 'SV1',
+      '🔵 Večeře': 'V',
+      '⚪ Večeře': 'V',
+    };
+    if (!typ && item['Typ Barva']) {
+      // Najdi klíč podle začátku nebo celého názvu
+      for (const [cz, key] of Object.entries(typBarvaMap)) {
+        if (item['Typ Barva'] === cz || item['Typ Barva'].endsWith(cz.replace(/^[^ ]+ /, ''))) {
+          typ = key;
+          break;
+        }
+      }
+    }
     if (!typ) {
       const nazev = (item['Název jídla'] || '').toLowerCase();
       if (nazev.includes('snídaně') || nazev.includes('snidane')) typ = 'S';
