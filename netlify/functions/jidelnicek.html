@@ -5,165 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jídelníček - {{klient}}</title>
     <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 11pt;
-            color: #333;
-        }
-        .page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            background: white;
-            position: relative;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .client-name {
-            font-size: 24pt;
-            font-weight: 300;
-        }
-        .meta-info {
-            text-align: right;
-            font-size: 10pt;
-            color: #666;
-        }
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat({{daysPerRow}}, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .day-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 16px;
-            overflow: hidden;
-            min-height: 220px;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .day-header {
-            background: #f8f8f8;
-            padding: 8px 15px;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 1px solid #eee;
-        }
-        .big-meal-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 12px;
-            object-fit: cover;
-            display: block;
-            margin: 20px auto 10px auto;
-        }
-        .big-meal-title {
-            font-size: 16pt;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .meal-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-        .meal-table th, .meal-table td {
-            border: 1px solid #e0e0e0;
-            padding: 6px 8px;
-            font-size: 10pt;
-            vertical-align: top;
-        }
-        .meal-table th {
-            background: #f8f8f8;
-            font-weight: bold;
-            text-align: left;
-        }
-        .meal-type-label {
-            font-size: 9pt;
-            color: #888;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .meal-items {
-            list-style: none;
-            padding-left: 0;
-            margin: 0;
-        }
-        .meal-items li {
-            font-size: 9pt;
-            color: #666;
-        }
-        .instructions {
-            font-size: 9pt;
-            color: #666;
-            background: #fafafa;
-            border-radius: 5px;
-            padding: 6px 8px;
-            margin-top: 4px;
-        }
-        .footer {
-            position: absolute;
-            bottom: 15mm;
-            left: 15mm;
-            right: 15mm;
-            border-top: 2px solid #f0f0f0;
-            padding-top: 15px;
-        }
-        .contact-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-        .contact-person {
-            font-weight: bold;
-            font-size: 12pt;
-        }
-        .contact-details {
-            font-size: 10pt;
-            color: #666;
-            line-height: 1.5;
-        }
-        .logo {
-            height: 40px;
-        }
-        .info-boxes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            font-size: 9pt;
-        }
-        .info-box {
-            padding: 10px;
-            background: #f8f8f8;
-            border-radius: 5px;
-        }
-        .info-box h4 {
-            margin-bottom: 5px;
-            color: #d4a574;
-            font-size: 10pt;
-        }
-        @media print {
-            .page {
-                margin: 0;
-                page-break-after: always;
-            }
-        }
+        @page { size: A4; margin: 0; }
+        body { font-family: Arial, sans-serif; font-size: 11pt; color: #333; }
+        .page { width: 210mm; min-height: 297mm; padding: 15mm; background: white; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        .client-name { font-size: 24pt; font-weight: 300; }
+        .meta-info { text-align: right; font-size: 10pt; color: #666; }
+        .days-grid { display: grid; grid-template-columns: repeat({{daysPerRow}}, 1fr); gap: 15px; margin-bottom: 30px; }
+        .day-card { border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; min-height: 220px; background: #fff; display: flex; flex-direction: column; justify-content: flex-start; }
+        .day-header { background: #f8f8f8; padding: 8px 15px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; }
+        .meal-section { padding: 12px 15px; margin-bottom: 0; }
         .bg-light { background: #f8f8f8; }
         .bg-dark { background: #e0e0e0; }
+        .meal-type-label { font-size: 9pt; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+        .meal-items { list-style: none; padding-left: 0; margin: 0; }
+        .meal-items li { font-size: 9pt; color: #666; }
+        .instructions { font-size: 9pt; color: #666; background: #fafafa; border-radius: 5px; padding: 6px 8px; margin-top: 4px; }
+        .footer { position: absolute; bottom: 15mm; left: 15mm; right: 15mm; border-top: 2px solid #f0f0f0; padding-top: 15px; }
+        .contact-info { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .contact-person { font-weight: bold; font-size: 12pt; }
+        .contact-details { font-size: 10pt; color: #666; line-height: 1.5; }
+        .logo { height: 40px; }
+        .info-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 9pt; }
+        .info-box { padding: 10px; background: #f8f8f8; border-radius: 5px; }
+        .info-box h4 { margin-bottom: 5px; color: #d4a574; font-size: 10pt; }
+        @media print { .page { margin: 0; page-break-after: always; } }
     </style>
 </head>
 <body>
@@ -175,21 +41,6 @@
                 <div>Datum donášky {{datumDonaska}}</div>
             </div>
         </div>
-        
-        {{!-- Jednoduchá varianta: pouze jeden typ jídla (např. jen obědy) --}}
-        {{#if simpleLayout}}
-        <div class="days-grid">
-            {{#each days}}
-            <div class="day-card">
-                <div class="day-header">DEN {{this.den}}</div>
-                {{#if this.meals.[0].image}}
-                <img class="big-meal-image" src="{{this.meals.[0].image}}" alt="{{this.meals.[0].title}}">
-                {{/if}}
-                <div class="big-meal-title">{{this.meals.[0].title}}</div>
-            </div>
-            {{/each}}
-        </div>
-        {{else}}
         <div class="days-grid">
             {{#each days}}
             <div class="day-card">
@@ -218,8 +69,6 @@
             </div>
             {{/each}}
         </div>
-        {{/if}}
-        
         <div class="footer">
             <div class="contact-info">
                 <div>
