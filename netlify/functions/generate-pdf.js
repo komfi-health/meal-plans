@@ -4,7 +4,7 @@ const chromium = require('@sparticuz/chromium');
 const handlebars = require('handlebars');
 const Airtable = require('airtable');
 
-// HTML šablona s podporou obrázků
+// HTML šablona přímo v kódu pro rychlost
 const htmlTemplate = `<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -69,7 +69,6 @@ const htmlTemplate = `<!DOCTYPE html>
             border: 1px solid #e0e0e0;
             border-radius: 10px;
             overflow: hidden;
-            break-inside: avoid;
         }
         
         .day-header {
@@ -81,7 +80,6 @@ const htmlTemplate = `<!DOCTYPE html>
         
         .meal-section {
             padding: 15px;
-            min-height: 120px;
         }
         
         .meal-type {
@@ -91,9 +89,10 @@ const htmlTemplate = `<!DOCTYPE html>
             margin-bottom: 5px;
         }
         
-        .meal-content {
-            display: flex;
-            gap: 10px;
+        .meal-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
         
         .meal-image {
@@ -101,17 +100,9 @@ const htmlTemplate = `<!DOCTYPE html>
             height: 80px;
             border-radius: 8px;
             object-fit: cover;
-            flex-shrink: 0;
-        }
-        
-        .meal-details {
-            flex: 1;
-        }
-        
-        .meal-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            float: left;
+            margin-right: 15px;
+            margin-bottom: 10px;
         }
         
         .meal-items {
@@ -140,6 +131,7 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         
         .instructions {
+            clear: both;
             margin-top: 10px;
             padding: 10px;
             background: #fafafa;
@@ -182,6 +174,29 @@ const htmlTemplate = `<!DOCTYPE html>
             line-height: 1.5;
         }
         
+        .logo {
+            height: 40px;
+        }
+        
+        .info-boxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 9pt;
+        }
+        
+        .info-box {
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+        
+        .info-box h4 {
+            margin-bottom: 5px;
+            color: #d4a574;
+            font-size: 10pt;
+        }
+        
         @media print {
             .page {
                 margin: 0;
@@ -208,19 +223,15 @@ const htmlTemplate = `<!DOCTYPE html>
                 <!-- Oběd -->
                 <div class="meal-section">
                     <div class="meal-type">Oběd</div>
-                    <div class="meal-content">
-                        {{#if this.obedImage}}
-                        <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
-                        {{/if}}
-                        <div class="meal-details">
-                            <div class="meal-title">{{this.obed}}</div>
-                            <ul class="meal-items">
-                                {{#each this.obedPolozky}}
-                                <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    </div>
+                    {{#if this.obedImage}}
+                    <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
+                    {{/if}}
+                    <div class="meal-title">{{this.obed}}</div>
+                    <ul class="meal-items">
+                        {{#each this.obedPolozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
                 </div>
                 
                 <div class="divider"></div>
@@ -228,22 +239,15 @@ const htmlTemplate = `<!DOCTYPE html>
                 <!-- Večeře -->
                 <div class="meal-section">
                     <div class="meal-type">Večeře</div>
-                    <div class="meal-content">
-                        {{#if this.vecereImage}}
-                        <img src="{{this.vecereImage}}" alt="{{this.vecere}}" class="meal-image">
-                        {{/if}}
-                        <div class="meal-details">
-                            <div class="meal-title">{{this.vecere}}</div>
-                            {{#if this.vecereInstrukce}}
-                            <div class="instructions">{{this.vecereInstrukce}}</div>
-                            {{/if}}
-                            <ul class="meal-items">
-                                {{#each this.vecerePolozky}}
-                                <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    </div>
+                    <div class="meal-title">{{this.vecere}}</div>
+                    {{#if this.vecereInstrukce}}
+                    <div class="instructions">{{this.vecereInstrukce}}</div>
+                    {{/if}}
+                    <ul class="meal-items">
+                        {{#each this.vecerePolozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
                 </div>
             </div>
             {{/each}}
@@ -257,6 +261,18 @@ const htmlTemplate = `<!DOCTYPE html>
                         {{telefon}}<br>
                         {{email}}
                     </div>
+                </div>
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
+            </div>
+            
+            <div class="info-boxes">
+                <div class="info-box">
+                    <h4>ZMĚNY</h4>
+                    <p>Rádi byste změnili objednávku nebo vyřadili konkrétní jídlo? Ozvěte se nám do pondělí 9:00, abyste stihli změnu ještě v daném týdnu.</p>
+                </div>
+                <div class="info-box">
+                    <h4>PRVNÍ OBJEDNÁVKA NA DOBÍRKU</h4>
+                    <p>Dostali jste první objednávku na dobírku a chutnalo Vám? Ozvěte se nám do pondělí 9:00 pomocí chatu na webu, emailem nebo případně telefonicky. Objednávka se automaticky neobnovuje.</p>
                 </div>
             </div>
         </div>
@@ -373,58 +389,100 @@ async function fetchMenuData(recordId, tableName) {
 function transformDataForTemplate(menuData) {
   const dayGroups = {};
   
+  // Získat typ šablony z prvního záznamu
+  const templateType = menuData[0]?.['Template'] || '5x0';
+  console.log('Typ šablony:', templateType);
+  
+  // Rozpoznat, která jídla zobrazit podle typu šablony
+  const showMeals = {
+    S: templateType.includes('S'),
+    SV1: templateType.includes('SV1'),
+    O: templateType.includes('O'),
+    SV2: templateType.includes('SV2'),
+    V: templateType.includes('V')
+  };
+  
   menuData.forEach(item => {
     const den = item['Den'];
     if (!dayGroups[den]) {
       dayGroups[den] = {
         den: den,
+        // Inicializace podle typu šablony
+        snidanePolozky: [],
+        svacina1Polozky: [],
         obedPolozky: [],
+        svacina2Polozky: [],
         vecerePolozky: [],
+        snidane: '',
+        svacina1: '',
         obed: '',
+        svacina2: '',
         vecere: '',
+        snidaneImage: null,
+        svacina1Image: null,
         obedImage: null,
+        svacina2Image: null,
         vecereImage: null,
+        snidaneInstrukce: null,
+        svacina1Instrukce: null,
+        obedInstrukce: null,
+        svacina2Instrukce: null,
         vecereInstrukce: null
       };
     }
     
     const nazevJidla = item['Název jídla'] || '';
-    const isObed = nazevJidla.toLowerCase().includes('oběd');
+    const nazevLower = nazevJidla.toLowerCase();
     
-    // Zpracování obrázku - pouze z GitHubu podle pole @image
-    const imagePath = item['@image']; // Obsahuje např. "img/023.png"
+    // Rozpoznání typu jídla
+    let mealType = null;
+    if (nazevLower.includes('snídaně') || nazevLower.includes('snidane')) {
+      mealType = 'snidane';
+    } else if (nazevLower.includes('svačina 1') || nazevLower.includes('dopolední svačina')) {
+      mealType = 'svacina1';
+    } else if (nazevLower.includes('oběd') || nazevLower.includes('obed')) {
+      mealType = 'obed';
+    } else if (nazevLower.includes('svačina 2') || nazevLower.includes('odpolední svačina')) {
+      mealType = 'svacina2';
+    } else if (nazevLower.includes('večeře') || nazevLower.includes('vecere')) {
+      mealType = 'vecere';
+    }
+    
+    // Zpracování obrázku
+    const imagePath = item['@image'];
     let imageUrl = null;
     
     if (imagePath) {
-      // Vytvořit plnou URL na GitHub
-      imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
-    }
-    
-    if (isObed) {
-      dayGroups[den].obed = nazevJidla.replace(/^OBĚD\s*/i, '').trim();
-      if (imageUrl) {
-        dayGroups[den].obedImage = imageUrl;
-      }
-    } else {
-      dayGroups[den].vecere = nazevJidla.replace(/^VEČEŘE\s*/i, '').trim();
-      if (imageUrl) {
-        dayGroups[den].vecereImage = imageUrl;
-      }
-      if (item['Instrukce']) {
-        dayGroups[den].vecereInstrukce = item['Instrukce'];
-      }
-    }
-    
-    if (item['Položka']) {
-      const polozka = {
-        nazev: item['Položka'],
-        pomer: item['Poměr'] || '1'
-      };
-      
-      if (isObed) {
-        dayGroups[den].obedPolozky.push(polozka);
+      if (!imagePath.includes('/')) {
+        imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/${imagePath}`;
       } else {
-        dayGroups[den].vecerePolozky.push(polozka);
+        imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
+      }
+    }
+    
+    // Přiřazení dat podle typu jídla
+    if (mealType) {
+      // Název jídla bez prefixu
+      const cleanName = nazevJidla
+        .replace(/^(SNÍDANĚ|SVAČINA 1|OBĚD|SVAČINA 2|VEČEŘE)\s*/i, '')
+        .trim();
+      
+      dayGroups[den][mealType] = cleanName;
+      
+      if (imageUrl) {
+        dayGroups[den][mealType + 'Image'] = imageUrl;
+      }
+      
+      if (item['Instrukce']) {
+        dayGroups[den][mealType + 'Instrukce'] = item['Instrukce'];
+      }
+      
+      if (item['Položka']) {
+        const polozka = {
+          nazev: item['Položka'],
+          pomer: item['Poměr'] || '1'
+        };
+        dayGroups[den][mealType + 'Polozky'].push(polozka);
       }
     }
   });
@@ -439,6 +497,8 @@ function transformDataForTemplate(menuData) {
     kontaktOsoba: 'Jiří Žilka',
     telefon: '734 602 600',
     email: 'zakaznici@budtekomfi.cz',
-    days: days.slice(0, 7) // Max 7 dní
+    days: days.slice(0, 7),
+    templateType: templateType,
+    showMeals: showMeals
   };
 }
