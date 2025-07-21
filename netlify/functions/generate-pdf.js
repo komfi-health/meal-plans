@@ -430,14 +430,14 @@ function transformDataForTemplate(menuData) {
     }
     // Připravit položku
     const polozka = {
-      nazev: item['Název jídla'] || item['Položka'] || '',
+      nazev: item['Položka'] || '',
       pomer: item['Poměr'] || '1',
       instructions: item['Instrukce'] || '',
       image: imageUrl
     };
     // Pokud už existuje, přidat do pole
     if (!dayGroups[den].meals[typ]) {
-      dayGroups[den].meals[typ] = { items: [], image: imageUrl, instructions: item['Instrukce'] || '' };
+      dayGroups[den].meals[typ] = { items: [], image: imageUrl, instructions: item['Instrukce'] || '', title: '' };
     }
     dayGroups[den].meals[typ].items.push(polozka);
     // Pokud ještě není nastaven obrázek/instrukce, nastav z prvního záznamu
@@ -446,6 +446,10 @@ function transformDataForTemplate(menuData) {
     }
     if (!dayGroups[den].meals[typ].instructions && item['Instrukce']) {
       dayGroups[den].meals[typ].instructions = item['Instrukce'];
+    }
+    // Pokud je vyplněn Název jídla a ještě není title, nastav ho
+    if (item['Název jídla'] && !dayGroups[den].meals[typ].title) {
+      dayGroups[den].meals[typ].title = item['Název jídla'];
     }
   });
   // Sestavit pole dnů podle pořadí
@@ -456,7 +460,7 @@ function transformDataForTemplate(menuData) {
       // Zajistit, že pro každý den jsou všechny typy jídel z konfigurace
       mealTypes.forEach(mt => {
         if (!day.meals[mt.key]) {
-          day.meals[mt.key] = { items: [], image: null, instructions: '' };
+          day.meals[mt.key] = { items: [], image: null, instructions: '', title: '' };
         }
       });
       return day;
@@ -465,7 +469,7 @@ function transformDataForTemplate(menuData) {
   if (simpleLayout) {
     days.forEach(day => {
       const typ = mealTypes[0].key;
-      day.meals = [day.meals[typ] || { items: [], image: null, instructions: '' }];
+      day.meals = [day.meals[typ] || { items: [], image: null, instructions: '', title: '' }];
     });
   }
   const firstRecord = menuData[0] || {};
