@@ -5,9 +5,103 @@ const handlebars = require('handlebars');
 const Airtable = require('airtable');
 const fs = require('fs');
 const path = require('path');
-
-// HTML šablona přímo v kódu pro rychlost
-const htmlTemplate = fs.readFileSync(path.join(__dirname, 'jidelnicek.html'), 'utf8');
+// Šablona natvrdo v kódu
+const htmlTemplate = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jídelníček - {{klient}}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { font-family: Arial, sans-serif; font-size: 11pt; color: #333; }
+        .page { width: 210mm; min-height: 297mm; padding: 15mm; background: white; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        .client-name { font-size: 24pt; font-weight: 300; }
+        .meta-info { text-align: right; font-size: 10pt; color: #666; }
+        .days-grid { display: grid; grid-template-columns: repeat({{daysPerRow}}, 1fr); gap: 15px; margin-bottom: 30px; }
+        .day-card { border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; min-height: 220px; background: #fff; display: flex; flex-direction: column; justify-content: flex-start; }
+        .day-header { background: #f8f8f8; padding: 8px 15px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; }
+        .meal-section { padding: 12px 15px; margin-bottom: 0; }
+        .bg-light { background: #f8f8f8; }
+        .bg-dark { background: #e0e0e0; }
+        .meal-type-label { font-size: 9pt; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+        .meal-items { list-style: none; padding-left: 0; margin: 0; }
+        .meal-items li { font-size: 9pt; color: #666; }
+        .instructions { font-size: 9pt; color: #666; background: #fafafa; border-radius: 5px; padding: 6px 8px; margin-top: 4px; }
+        .footer { position: absolute; bottom: 15mm; left: 15mm; right: 15mm; border-top: 2px solid #f0f0f0; padding-top: 15px; }
+        .contact-info { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .contact-person { font-weight: bold; font-size: 12pt; }
+        .contact-details { font-size: 10pt; color: #666; line-height: 1.5; }
+        .logo { height: 40px; }
+        .info-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 9pt; }
+        .info-box { padding: 10px; background: #f8f8f8; border-radius: 5px; }
+        .info-box h4 { margin-bottom: 5px; color: #d4a574; font-size: 10pt; }
+        @media print { .page { margin: 0; page-break-after: always; } }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <div class="client-name">{{klient}}</div>
+            <div class="meta-info">
+                <div>ID {{idCircuit}}</div>
+                <div>Datum donášky {{datumDonaska}}</div>
+            </div>
+        </div>
+        <div class="days-grid">
+            {{#each days}}
+            <div class="day-card">
+                <div class="day-header">DEN {{this.den}}</div>
+                {{#each ../../mealTypes}}
+                <div class="meal-section {{#if (isEven @index)}}bg-light{{else}}bg-dark{{/if}}">
+                    <div class="meal-type-label">{{this.label}}</div>
+                    {{#with (lookup ../this.meals this.key)}}
+                        {{#if title}}
+                        <div><b>{{title}}</b></div>
+                        {{/if}}
+                        {{#if image}}
+                        <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
+                        {{/if}}
+                        <ul class="meal-items">
+                            {{#each items}}
+                            <li>{{this.pomer}} {{this.nazev}}</li>
+                            {{/each}}
+                        </ul>
+                        {{#if instructions}}
+                        <div class="instructions">{{instructions}}</div>
+                        {{/if}}
+                    {{/with}}
+                </div>
+                {{/each}}
+            </div>
+            {{/each}}
+        </div>
+        <div class="footer">
+            <div class="contact-info">
+                <div>
+                    <div class="contact-person">{{kontaktOsoba}}</div>
+                    <div class="contact-details">
+                        {{telefon}}<br>
+                        {{email}}
+                    </div>
+                </div>
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuYCHvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
+            </div>
+            <div class="info-boxes">
+                <div class="info-box">
+                    <h4>ZMĚNY</h4>
+                    <p>Rádi byste změnili objednávku nebo vyřadili konkrétní jídlo? Ozvěte se nám do pondělí 9:00, abyste stihli změnu ještě v daném týdnu.</p>
+                </div>
+                <div class="info-box">
+                    <h4>PRVNÍ OBJEDNÁVKA NA DOBÍRKU</h4>
+                    <p>Dostali jste první objednávku na dobírku a chutnalo Vám? Ozvěte se nám do pondělí 9:00 pomocí chatu na webu, emailem nebo případně telefonicky. Objednávka se automaticky neobnovuje.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
 
 // Inicializace Airtable
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
