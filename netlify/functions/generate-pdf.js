@@ -23,8 +23,6 @@ const htmlTemplate = `<!DOCTYPE html>
         .day-card { border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; min-height: 220px; background: #fff; display: flex; flex-direction: column; justify-content: flex-start; }
         .day-header { background: #f8f8f8; padding: 8px 15px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; }
         .meal-section { padding: 12px 15px; margin-bottom: 0; }
-        .meal-section:nth-child(odd) { background: #f8f8f8; }
-        .meal-section:nth-child(even) { background: #e0e0e0; }
         .bg-light { background: #f8f8f8; }
         .bg-dark { background: #e0e0e0; }
         .meal-type-label { font-size: 9pt; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
@@ -55,27 +53,12 @@ const htmlTemplate = `<!DOCTYPE html>
             {{#each days}}
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
-                {{#each ../../mealTypes}}
-                <div class="meal-section">
-                    <div class="meal-type-label">{{this.label}}</div>
-                    {{#with (lookup ../this.meals this.key)}}
-                        {{#if title}}
-                        <div><b>{{title}}</b></div>
-                        {{/if}}
-                        {{#if image}}
-                        <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
-                        {{/if}}
-                        <ul class="meal-items">
-                            {{#each items}}
-                            <li>{{this.pomer}} {{this.nazev}}</li>
-                            {{/each}}
-                        </ul>
-                        {{#if instructions}}
-                        <div class="instructions">{{instructions}}</div>
-                        {{/if}}
-                    {{/with}}
-                </div>
+                <pre>{{json this}}</pre>
+                <ul>
+                {{#each ../mealTypes}}
+                  <li>{{this.key}}: {{this.label}}</li>
                 {{/each}}
+                </ul>
             </div>
             {{/each}}
         </div>
@@ -88,7 +71,7 @@ const htmlTemplate = `<!DOCTYPE html>
                         {{email}}
                     </div>
                 </div>
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuYCHvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
             </div>
             <div class="info-boxes">
                 <div class="info-box">
@@ -339,3 +322,7 @@ function transformDataForTemplate(menuData) {
     templateType
   };
 }
+
+handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context, null, 2);
+});
