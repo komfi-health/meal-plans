@@ -220,6 +220,52 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
                 
+                {{#if ../showMeals.S}}
+                {{#if this.snidane}}
+                <!-- Snídaně -->
+                <div class="meal-section">
+                    <div class="meal-type">Snídaně</div>
+                    {{#if this.snidaneImage}}
+                    <img src="{{this.snidaneImage}}" alt="{{this.snidane}}" class="meal-image">
+                    {{/if}}
+                    <div class="meal-title">{{this.snidane}}</div>
+                    <ul class="meal-items">
+                        {{#each this.snidanePolozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
+                    {{#if this.snidaneInstrukce}}
+                    <div class="instructions">{{this.snidaneInstrukce}}</div>
+                    {{/if}}
+                </div>
+                <div class="divider"></div>
+                {{/if}}
+                {{/if}}
+                
+                {{#if ../showMeals.SV1}}
+                {{#if this.svacina1}}
+                <!-- Dopolední svačina -->
+                <div class="meal-section">
+                    <div class="meal-type">Dopolední svačina</div>
+                    {{#if this.svacina1Image}}
+                    <img src="{{this.svacina1Image}}" alt="{{this.svacina1}}" class="meal-image">
+                    {{/if}}
+                    <div class="meal-title">{{this.svacina1}}</div>
+                    <ul class="meal-items">
+                        {{#each this.svacina1Polozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
+                    {{#if this.svacina1Instrukce}}
+                    <div class="instructions">{{this.svacina1Instrukce}}</div>
+                    {{/if}}
+                </div>
+                <div class="divider"></div>
+                {{/if}}
+                {{/if}}
+                
+                {{#if ../showMeals.O}}
+                {{#if this.obed}}
                 <!-- Oběd -->
                 <div class="meal-section">
                     <div class="meal-type">Oběd</div>
@@ -232,23 +278,56 @@ const htmlTemplate = `<!DOCTYPE html>
                         <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
                         {{/each}}
                     </ul>
+                    {{#if this.obedInstrukce}}
+                    <div class="instructions">{{this.obedInstrukce}}</div>
+                    {{/if}}
                 </div>
+                {{/if}}
+                {{/if}}
                 
+                {{#if ../showMeals.SV2}}
+                {{#if this.svacina2}}
                 <div class="divider"></div>
+                <!-- Odpolední svačina -->
+                <div class="meal-section">
+                    <div class="meal-type">Odpolední svačina</div>
+                    {{#if this.svacina2Image}}
+                    <img src="{{this.svacina2Image}}" alt="{{this.svacina2}}" class="meal-image">
+                    {{/if}}
+                    <div class="meal-title">{{this.svacina2}}</div>
+                    <ul class="meal-items">
+                        {{#each this.svacina2Polozky}}
+                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                        {{/each}}
+                    </ul>
+                    {{#if this.svacina2Instrukce}}
+                    <div class="instructions">{{this.svacina2Instrukce}}</div>
+                    {{/if}}
+                </div>
+                {{/if}}
+                {{/if}}
                 
+                {{#if ../showMeals.V}}
+                {{#if this.vecere}}
+                <div class="divider"></div>
                 <!-- Večeře -->
                 <div class="meal-section">
                     <div class="meal-type">Večeře</div>
-                    <div class="meal-title">{{this.vecere}}</div>
-                    {{#if this.vecereInstrukce}}
-                    <div class="instructions">{{this.vecereInstrukce}}</div>
+                    {{#if this.vecereImage}}
+                    <img src="{{this.vecereImage}}" alt="{{this.vecere}}" class="meal-image">
                     {{/if}}
+                    <div class="meal-title">{{this.vecere}}</div>
                     <ul class="meal-items">
                         {{#each this.vecerePolozky}}
                         <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
                         {{/each}}
                     </ul>
+                    {{#if this.vecereInstrukce}}
+                    <div class="instructions">{{this.vecereInstrukce}}</div>
+                    {{/if}}
                 </div>
+                {{/if}}
+                {{/if}}
             </div>
             {{/each}}
         </div>
