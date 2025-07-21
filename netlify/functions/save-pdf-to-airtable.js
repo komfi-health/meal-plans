@@ -20,6 +20,30 @@ exports.handler = async (event, context) => {
     
     console.log('Processing:', recordId, airtableRecordId);
     
+    // Inicializace A
+cat > netlify/functions/save-pdf-to-airtable.js << 'EOF'
+const Airtable = require('airtable');
+
+exports.handler = async (event, context) => {
+  console.log('Save PDF to Airtable - start');
+  
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({ error: 'Method Not Allowed' })
+    };
+  }
+
+  try {
+    const body = JSON.parse(event.body || '{}');
+    const { recordId, airtableRecordId } = body;
+    
+    console.log('Processing:', recordId, airtableRecordId);
+    
     // Inicializace Airtable
     const base = new Airtable({ 
       apiKey: process.env.AIRTABLE_API_KEY 
@@ -43,30 +67,34 @@ exports.handler = async (event, context) => {
     
     console.log('PDF generated, size:', pdfData.pdf.length);
     
-    // 2. Upload na Cloudinary demo (pro test)
-    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/demo/upload';
+    // 2. Konverze base64 na buffer
+    const pdfBuffer = Buffer.from(pdfData.pdf, 'base64');
     
-    const uploadResponse = await fetch(cloudinaryUrl, {
+    // 3. Upload na tmpfiles.org (soubory vydrží 1 hodinu)
+    const FormData = require('form-data');
+    const formData = new FormData();
+    formData.append('file', pdfBuffer, {
+      filename: pdfData.filename,
+      contentType: 'application/pdf'
+    });
+    
+    const uploadResponse = await fetch('https://tmpfiles.org/api/v1/upload', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        file: `data:application/pdf;base64,${pdfData.pdf}`,
-        upload_preset: 'ml_default',
-        public_id: pdfData.filename.replace('.pdf', ''),
-        resource_type: 'raw'
-      })
+      body: formData,
+      headers: formData.getHeaders()
     });
     
     const uploadResult = await uploadResponse.json();
     console.log('Upload result:', uploadResult);
     
-    // 3. Uložení URL do Airtable
-    if (uploadResult.secure_url) {
+    if (uploadResult.status === 'success' && uploadResult.data && uploadResult.data.url) {
+      // Převedeme URL na přímý odkaz
+      const directUrl = uploadResult.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+      
+      // 4. Uložení URL do Airtable
       await base('tblCHxatBEyaspzR3').update(airtableRecordId, {
         'fldzFLOoDZhhs00GN': [{
-          url: uploadResult.secure_url,
+          url: directUrl,
           filename: pdfData.filename
         }]
       });
@@ -83,8 +111,8 @@ exports.handler = async (event, context) => {
           success: true,
           message: 'PDF uloženo do Airtable',
           filename: pdfData.filename,
-          pdfUrl: uploadResult.secure_url,
-          size: pdfData.pdf.length
+          pdfUrl: directUrl,
+          note: 'Soubor je dočasný - vydrží 1 hodinu'
         })
       };
     } else {
