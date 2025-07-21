@@ -315,7 +315,7 @@ exports.handler = async (event, context) => {
 
     // 2. Transformace dat pro šablonu
     const templateData = transformDataForTemplate(menuData);
-    
+    console.log('templateData:', JSON.stringify(templateData, null, 2));
     // 3. Kompilace HTML
     const template = handlebars.compile(htmlTemplate);
     const html = template(templateData);
