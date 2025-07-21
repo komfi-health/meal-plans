@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
       apiKey: process.env.AIRTABLE_API_KEY 
     }).base(process.env.AIRTABLE_BASE_ID);
     
-    // Zavoláme generate-pdf endpoint
+    // 1. Vygenerujeme PDF
     const pdfResponse = await fetch('https://kmfi-meals.netlify.app/.netlify/functions/generate-pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -41,20 +41,55 @@ exports.handler = async (event, context) => {
       throw new Error('PDF generation failed');
     }
     
-    // Pro test - vrátíme jen info
-    return {
-      statusCode: 200,
+    console.log('PDF generated, size:', pdfData.pdf.length);
+    
+    // 2. Upload na Cloudinary demo (pro test)
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/demo/upload';
+    
+    const uploadResponse = await fetch(cloudinaryUrl, {
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        success: true,
-        message: 'PDF generated successfully',
-        filename: pdfData.filename,
-        size: pdfData.pdf.length
+        file: `data:application/pdf;base64,${pdfData.pdf}`,
+        upload_preset: 'ml_default',
+        public_id: pdfData.filename.replace('.pdf', ''),
+        resource_type: 'raw'
       })
-    };
+    });
+    
+    const uploadResult = await uploadResponse.json();
+    console.log('Upload result:', uploadResult);
+    
+    // 3. Uložení URL do Airtable
+    if (uploadResult.secure_url) {
+      await base('tblCHxatBEyaspzR3').update(airtableRecordId, {
+        'fldzFLOoDZhhs00GN': [{
+          url: uploadResult.secure_url,
+          filename: pdfData.filename
+        }]
+      });
+      
+      console.log('Saved to Airtable');
+      
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({
+          success: true,
+          message: 'PDF uloženo do Airtable',
+          filename: pdfData.filename,
+          pdfUrl: uploadResult.secure_url,
+          size: pdfData.pdf.length
+        })
+      };
+    } else {
+      throw new Error('Upload failed: ' + JSON.stringify(uploadResult));
+    }
     
   } catch (error) {
     console.error('Error:', error);
