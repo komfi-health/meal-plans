@@ -428,21 +428,25 @@ function transformDataForTemplate(menuData) {
         imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
       }
     }
-    // Sestavit položky
-    const polozky = [];
-    if (item['Položka']) {
-      polozky.push({
-        nazev: item['Položka'],
-        pomer: item['Poměr'] || '1'
-      });
-    }
-    // Uložit do struktury
-    dayGroups[den].meals[typ] = {
-      title: item['Název jídla'] || '',
-      image: imageUrl,
-      items: polozky,
-      instructions: item['Instrukce'] || ''
+    // Připravit položku
+    const polozka = {
+      nazev: item['Název jídla'] || item['Položka'] || '',
+      pomer: item['Poměr'] || '1',
+      instructions: item['Instrukce'] || '',
+      image: imageUrl
     };
+    // Pokud už existuje, přidat do pole
+    if (!dayGroups[den].meals[typ]) {
+      dayGroups[den].meals[typ] = { items: [], image: imageUrl, instructions: item['Instrukce'] || '' };
+    }
+    dayGroups[den].meals[typ].items.push(polozka);
+    // Pokud ještě není nastaven obrázek/instrukce, nastav z prvního záznamu
+    if (!dayGroups[den].meals[typ].image && imageUrl) {
+      dayGroups[den].meals[typ].image = imageUrl;
+    }
+    if (!dayGroups[den].meals[typ].instructions && item['Instrukce']) {
+      dayGroups[den].meals[typ].instructions = item['Instrukce'];
+    }
   });
   // Sestavit pole dnů podle pořadí
   const days = Object.values(dayGroups)
@@ -452,7 +456,7 @@ function transformDataForTemplate(menuData) {
       // Zajistit, že pro každý den jsou všechny typy jídel z konfigurace
       mealTypes.forEach(mt => {
         if (!day.meals[mt.key]) {
-          day.meals[mt.key] = { title: '', image: null, items: [], instructions: '' };
+          day.meals[mt.key] = { items: [], image: null, instructions: '' };
         }
       });
       return day;
@@ -461,7 +465,7 @@ function transformDataForTemplate(menuData) {
   if (simpleLayout) {
     days.forEach(day => {
       const typ = mealTypes[0].key;
-      day.meals = [day.meals[typ] || { title: '', image: null, items: [], instructions: '' }];
+      day.meals = [day.meals[typ] || { items: [], image: null, instructions: '' }];
     });
   }
   const firstRecord = menuData[0] || {};
