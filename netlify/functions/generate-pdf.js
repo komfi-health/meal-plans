@@ -53,12 +53,27 @@ const htmlTemplate = `<!DOCTYPE html>
             {{#each days}}
             <div class="day-card">
                 <div class="day-header">DEN {{this.den}}</div>
-                <pre>{{json this}}</pre>
-                <ul>
                 {{#each ../mealTypes}}
-                  <li>{{this.key}}: {{this.label}}</li>
+                <div class="meal-section">
+                    <div class="meal-type-label">{{this.label}}</div>
+                    {{#with (lookup ../this.meals this.key)}}
+                        {{#if title}}
+                        <div><b>{{title}}</b></div>
+                        {{/if}}
+                        {{#if image}}
+                        <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
+                        {{/if}}
+                        <ul class="meal-items">
+                            {{#each items}}
+                            <li>{{this.pomer}} {{this.nazev}}</li>
+                            {{/each}}
+                        </ul>
+                        {{#if instructions}}
+                        <div class="instructions">{{instructions}}</div>
+                        {{/if}}
+                    {{/with}}
+                </div>
                 {{/each}}
-                </ul>
             </div>
             {{/each}}
         </div>
