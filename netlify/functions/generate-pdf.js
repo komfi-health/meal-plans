@@ -388,12 +388,13 @@ function transformDataForTemplate(menuData) {
   const dayGroups = {};
   // Získat typ šablony z prvního záznamu
   const templateType = menuData[0]?.['Template'] || '5x-O';
-  const match = templateType.match(/(\d+)x([A-Z\-]+)/);
+  const match = templateType.match(/(\d+)x([A-Z0-9\-]+)/);
   const daysCount = match ? parseInt(match[1], 10) : 5;
   const mealTypeString = match ? match[2] : 'O';
-  // Rozpoznat typy jídel podle šablony
+  // Nové robustní rozpoznání typů jídel podle šablony
   const mealTypeOrder = ['S', 'SV1', 'O', 'SV2', 'V'];
-  const mealTypes = mealTypeOrder.filter(t => mealTypeString.includes(t)).map(t => ({
+  const mealTypeKeys = mealTypeString.split('-');
+  const mealTypes = mealTypeOrder.filter(t => mealTypeKeys.includes(t)).map(t => ({
     key: t,
     label: t === 'S' ? 'Snídaně' : t === 'SV1' ? 'Dop. svačina' : t === 'O' ? 'Oběd' : t === 'SV2' ? 'Odp. svačina' : 'Večeře'
   }));
