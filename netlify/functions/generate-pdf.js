@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 // HTML šablona přímo v kódu pro rychlost
-const htmlTemplate = fs.readFileSync(path.join(__dirname, '../../templates/jidelnicek.html'), 'utf8');
+const htmlTemplate = fs.readFileSync(path.join(__dirname, 'jidelnicek.html'), 'utf8');
 
 // Inicializace Airtable
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
