@@ -4,7 +4,7 @@ const chromium = require('@sparticuz/chromium');
 const handlebars = require('handlebars');
 const Airtable = require('airtable');
 
-// HTML šablona přímo v kódu (pro Netlify Functions)
+// HTML šablona s podporou obrázků
 const htmlTemplate = `<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -69,6 +69,7 @@ const htmlTemplate = `<!DOCTYPE html>
             border: 1px solid #e0e0e0;
             border-radius: 10px;
             overflow: hidden;
+            break-inside: avoid;
         }
         
         .day-header {
@@ -80,6 +81,7 @@ const htmlTemplate = `<!DOCTYPE html>
         
         .meal-section {
             padding: 15px;
+            min-height: 120px;
         }
         
         .meal-type {
@@ -87,6 +89,23 @@ const htmlTemplate = `<!DOCTYPE html>
             text-transform: uppercase;
             color: #888;
             margin-bottom: 5px;
+        }
+        
+        .meal-content {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .meal-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .meal-details {
+            flex: 1;
         }
         
         .meal-title {
@@ -121,7 +140,6 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         
         .instructions {
-            clear: both;
             margin-top: 10px;
             padding: 10px;
             background: #fafafa;
@@ -190,12 +208,19 @@ const htmlTemplate = `<!DOCTYPE html>
                 <!-- Oběd -->
                 <div class="meal-section">
                     <div class="meal-type">Oběd</div>
-                    <div class="meal-title">{{this.obed}}</div>
-                    <ul class="meal-items">
-                        {{#each this.obedPolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
+                    <div class="meal-content">
+                        {{#if this.obedImage}}
+                        <img src="{{this.obedImage}}" alt="{{this.obed}}" class="meal-image">
+                        {{/if}}
+                        <div class="meal-details">
+                            <div class="meal-title">{{this.obed}}</div>
+                            <ul class="meal-items">
+                                {{#each this.obedPolozky}}
+                                <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="divider"></div>
@@ -203,15 +228,22 @@ const htmlTemplate = `<!DOCTYPE html>
                 <!-- Večeře -->
                 <div class="meal-section">
                     <div class="meal-type">Večeře</div>
-                    <div class="meal-title">{{this.vecere}}</div>
-                    {{#if this.vecereInstrukce}}
-                    <div class="instructions">{{this.vecereInstrukce}}</div>
-                    {{/if}}
-                    <ul class="meal-items">
-                        {{#each this.vecerePolozky}}
-                        <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
-                        {{/each}}
-                    </ul>
+                    <div class="meal-content">
+                        {{#if this.vecereImage}}
+                        <img src="{{this.vecereImage}}" alt="{{this.vecere}}" class="meal-image">
+                        {{/if}}
+                        <div class="meal-details">
+                            <div class="meal-title">{{this.vecere}}</div>
+                            {{#if this.vecereInstrukce}}
+                            <div class="instructions">{{this.vecereInstrukce}}</div>
+                            {{/if}}
+                            <ul class="meal-items">
+                                {{#each this.vecerePolozky}}
+                                <li><span class="portion">{{this.pomer}}</span> {{this.nazev}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             {{/each}}
@@ -351,6 +383,7 @@ function transformDataForTemplate(menuData) {
         obed: '',
         vecere: '',
         obedImage: null,
+        vecereImage: null,
         vecereInstrukce: null
       };
     }
@@ -358,13 +391,32 @@ function transformDataForTemplate(menuData) {
     const nazevJidla = item['Název jídla'] || '';
     const isObed = nazevJidla.toLowerCase().includes('oběd');
     
+    // Zpracování obrázku z Airtable
+    const imageField = item['fldKt9xsa6KrvmNPI']; // Pole s obrázkem
+    let imageUrl = null;
+    
+    if (imageField && imageField.length > 0) {
+      // Airtable vrací pole attachmentů
+      imageUrl = imageField[0].url;
+    } else if (item['@image']) {
+      // Pokud existuje číselná reference na obrázek
+      const imageNumber = item['@image'];
+      if (imageNumber) {
+        // Použít obrázek z GitHub repozitáře
+        imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/${imageNumber}.png`;
+      }
+    }
+    
     if (isObed) {
       dayGroups[den].obed = nazevJidla.replace(/^OBĚD\s*/i, '').trim();
-      if (item['@image']) {
-        dayGroups[den].obedImage = item['@image'];
+      if (imageUrl) {
+        dayGroups[den].obedImage = imageUrl;
       }
     } else {
       dayGroups[den].vecere = nazevJidla.replace(/^VEČEŘE\s*/i, '').trim();
+      if (imageUrl) {
+        dayGroups[den].vecereImage = imageUrl;
+      }
       if (item['Instrukce']) {
         dayGroups[den].vecereInstrukce = item['Instrukce'];
       }
