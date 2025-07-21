@@ -1,0 +1,19 @@
+{
+  "name": "kmfi-meals",
+  "version": "1.0.0",
+  "description": "Generátor PDF jídelníčků z Airtable",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "^119.0.0",
+    "airtable": "^0.12.2",
+    "handlebars": "^4.7.8",
+    "puppeteer-core": "^21.6.1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.10.1"
+  }
+}
