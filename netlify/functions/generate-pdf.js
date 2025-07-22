@@ -314,11 +314,10 @@ function transformDataForTemplate(menuData) {
         if (!day.meals[mt.key]) {
           day.meals[mt.key] = { items: [], image: null, instructions: '', title: '' };
         }
-        // Přidej flag hideSingleItem a případně vyprázdni items
+        // Přidej flag hideSingleItem
         const m = day.meals[mt.key];
         if (m.items && m.items.length === 1 && m.title && m.items[0].nazev === m.title) {
           m.hideSingleItem = true;
-          m.items = []; // Zamez duplicitnímu výpisu v seznamu
         } else {
           m.hideSingleItem = false;
         }
