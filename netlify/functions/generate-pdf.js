@@ -279,6 +279,9 @@ function transformDataForTemplate(menuData) {
       } else {
         imageUrl = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
       }
+    } else {
+      // Pokud není obrázek, použij placeholder podle typu jídla
+      imageUrl = `/img/meals/placeholders/${typ}.png`;
     }
     // Připravit položku
     const polozka = {

@@ -140,6 +140,46 @@ Generuje PDF a ukládá URL do Airtable
 ### GET `/download-pdf?id=EXTRA_000`
 Stáhne PDF pro daný záznam
 
+## 📝 Konfigurace šablony jídelníčku
+
+- **Formát:** `<počet dní>x<typy jídel>`
+- **Příklad:** `5xO` znamená 5 dní, pouze obědy. `4xO-V` znamená 4 dny, oběd a večeře.
+- **Typy jídel:**
+  - `S` = snídaně
+  - `SV1` = dopolední svačina
+  - `O` = oběd
+  - `SV2` = odpolední svačina
+  - `V` = večeře
+
+Šablona se dynamicky přizpůsobí podle této konfigurace – počet dní i typy jídel v jednotlivých dnech.
+
+## 📝 Varianty šablon a layoutů generovaných jídelníčků
+
+Generovaný layout jídelníčku má několik verzí podle typu šablony a počtu dní/typů jídel:
+
+- **Velké/větší karty (např. 5xO, 6xO, 7xO):**
+  - Pouze jeden typ jídla (typicky oběd) na den.
+  - V každé kartě dne je velký obrázek jídla a jeho název.
+  - Veškerý obsah se vejde na 1 A4.
+
+- **Standardní karty s obrázky a více typy jídel (např. 5xO-V):**
+  - Více typů jídel pod sebou v rámci jednoho dne (např. oběd, večeře).
+  - U každé ingredience je uveden poměr a popis přípravy.
+  - Text může být menší, vše se opět vejde na 1 A4.
+
+- **Pouze textové jídelníčky (více typů jídel/den, více dní):**
+  - Neobsahují obrázky jídel (kvůli místu).
+  - Text je menší, při 4+ typech jídel na den a/nebo 6+ dnech se využívá i druhá strana A4.
+
+### Další poznámky k layoutu
+- Karty dnů s jídly nikdy nezasahují do hlavičky ani patičky.
+- Pokud je jídelníček příliš dlouhý, pokračuje na druhé straně.
+- Typ jídla (oběd, snídaně, ...) je vždy u jídla zobrazen.
+- Název daného jídla se zobrazuje pouze jednou (např. "Katův šleh z vepřového masa, rýže").
+- Pro jídla z více ingrediencí je v Airtable datech název jídla pouze u jedné z nich – ten je potřeba použít.
+- Pokud chybí obrázek jídla a má v šabloně být, použije se placeholder z `img/meals/placeholders`.
+- Informace v patičce se načítají ze separátního HTML pro snadnější editaci.
+
 ## ⚡ Optimalizace
 
 - PDF se generuje dynamicky při každém stažení
