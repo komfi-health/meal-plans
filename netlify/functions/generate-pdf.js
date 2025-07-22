@@ -64,13 +64,11 @@ const htmlTemplate = `<!DOCTYPE html>
                         <img src="{{image}}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;float:left;margin-right:8px;">
                         {{/if}}
                         <ul class="meal-items">
-                            {{#if (and (eq items.length 1) (eq items.[0].nazev title))}}
-                                {{!-- Nezobrazuj položku, pokud je stejná jako title --}}
-                            {{else}}
+                            {{#unless hideSingleItem}}
                                 {{#each items}}
                                 <li>{{this.pomer}} {{this.nazev}}</li>
                                 {{/each}}
-                            {{/if}}
+                            {{/unless}}
                         </ul>
                         {{#if instructions}}
                         <div class="instructions">{{instructions}}</div>
