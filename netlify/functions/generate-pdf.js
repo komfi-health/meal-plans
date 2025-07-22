@@ -133,7 +133,6 @@ exports.handler = async (event, context) => {
 
     // 1. Načtení dat z Airtable
     const menuData = await fetchMenuData(recordId, tableName);
-    console.log('DEBUG Airtable data:', JSON.stringify(menuData.map(item => ({den: item['Den'], typJidla: item['Typ jídla'], typBarva: item['Typ Barva'], nazev: item['Název jídla'], polozka: item['Položka']})), null, 2));
     
     if (!menuData || menuData.length === 0) {
       return {
