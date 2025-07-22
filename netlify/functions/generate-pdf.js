@@ -243,26 +243,18 @@ function transformDataForTemplate(menuData) {
       'Dop. svačina': 'SV1',
       'Oběd': 'O',
       'Odp. svačina': 'SV2',
-      'Odpolední svačina': 'SV2',
       'Večeře': 'V',
       '🟡 Snídaně': 'S',
-      '🟢 Dop. svačina': 'SV1',
-      '🟣 Oběd': 'O',
       '🟠 Odp. svačina': 'SV2',
+      '🟣 Oběd': 'O',
+      '🟢 Dop. svačina': 'SV1',
       '🔵 Večeře': 'V',
       '⚪ Večeře': 'V',
     };
     if (!typ && item['Typ Barva']) {
-      // Robustní porovnání: odstranění emoji, lowercased, trimmed
-      const typBarvaRaw = item['Typ Barva'] || '';
-      const typBarvaNorm = typBarvaRaw.replace(/^\p{Emoji_Presentation}\s*/u, '').trim().toLowerCase();
+      // Najdi klíč podle začátku nebo celého názvu
       for (const [cz, key] of Object.entries(typBarvaMap)) {
-        const czNorm = cz.replace(/^\p{Emoji_Presentation}\s*/u, '').trim().toLowerCase();
-        if (
-          typBarvaRaw === cz ||
-          typBarvaRaw.endsWith(cz.replace(/^[^ ]+ /, '')) ||
-          typBarvaNorm === czNorm
-        ) {
+        if (item['Typ Barva'] === cz || item['Typ Barva'].endsWith(cz.replace(/^[^ ]+ /, ''))) {
           typ = key;
           break;
         }
