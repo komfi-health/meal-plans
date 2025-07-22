@@ -111,6 +111,7 @@ const htmlTemplate = `<!DOCTYPE html>
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 
 exports.handler = async (event, context) => {
+  console.log('START handler', JSON.stringify(event), JSON.stringify(context));
   // Pouze POST metoda
   if (event.httpMethod !== 'POST') {
     return {
@@ -186,12 +187,13 @@ exports.handler = async (event, context) => {
     };
     
   } catch (error) {
-    console.error('Chyba při generování PDF:', error);
+    console.error('Chyba při generování PDF:', error, error.stack);
     return {
       statusCode: 500,
       body: JSON.stringify({
         success: false,
-        error: error.message
+        error: error.message,
+        stack: error.stack
       })
     };
   }
