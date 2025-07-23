@@ -336,17 +336,17 @@ function determineLayoutType(templateType, daysCount, mealTypesCount) {
     
     const mealTypes = match[2].split('-');
     
-    // Big cards layout: only one meal type (typically lunch)
-    if (mealTypes.length === 1 && ['O'].includes(mealTypes[0])) {
+    // Big cards layout: only one meal type AND 5 or fewer days
+    if (mealTypes.length === 1 && daysCount <= 5) {
         return 'big-cards';
     }
     
-    // Text-only layout: 4+ meal types per day OR 6+ days
-    if (mealTypes.length >= 4 || daysCount >= 6) {
+    // Text-only layout: 3+ meal types per day OR 6+ days
+    if (mealTypes.length >= 3 || daysCount >= 6) {
         return 'text-only';
     }
     
-    // Standard layout: 2-3 meal types with images
+    // Standard layout: 2 meal types with images
     return 'standard';
 }
 
@@ -435,18 +435,14 @@ function transformDataForTemplate(menuData) {
         
         // Add item to meal
         if (item['Položka']) {
-            // For main meals (lunch/dinner), don't add item if it's the same as meal name
+            // For main meals, always show items (including soups for dinner)
             const isMainMeal = ['O', 'V'].includes(mealType);
-            const itemName = item['Položka'].replace(/["""]/g, ''); // Remove quotes
-            const mealName = (item['Název jídla'] || '').replace(/["""]/g, '');
             
-            if (!isMainMeal || itemName !== mealName) {
-                meal.items.push({
-                    nazev: item['Položka'],
-                    pomer: item['Poměr'] || '1',
-                    showPortion: !isMainMeal // Hide portion for main meals
-                });
-            }
+            meal.items.push({
+                nazev: item['Položka'],
+                pomer: item['Poměr'] || '1',
+                showPortion: !isMainMeal // Hide portion for main meals but show items
+            });
         }
         
         // Set meal title (only once)

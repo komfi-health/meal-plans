@@ -1,36 +1,53 @@
 # PDF Generátor Jídelníčků
 
-Automatický systém pro generování PDF jídelníčků z dat v Airtable.
+Systém pro generování PDF jídelníčků z dat v Airtable. Podporuje lokální vývoj i cloudové nasazení přes Netlify Functions.
 
 ## 🚀 Jak to funguje
 
-### Architektura
+### Lokální vývoj
+```
+Airtable → Node.js Script → PDF → Lokální soubory
+```
+
+### Produkce (Netlify)
 ```
 Airtable → Netlify Functions → PDF → Airtable Attachment
 ```
 
 1. **Airtable Script** spustí proces generování
-2. **Netlify Functions** zpracují požadavek:
-   - Načtou data z Airtable
-   - Vygenerují PDF pomocí Puppeteer
-   - Uloží odkaz zpět do Airtable
-3. **PDF je dostupné** jako příloha v záznamu
+2. **PDF generátor** zpracuje požadavek:
+   - Načte data z Airtable
+   - Vygeneruje PDF pomocí Puppeteer
+   - Uloží PDF lokálně nebo zpět do Airtable
+3. **PDF je dostupné** jako soubor nebo příloha
 
 ## 📁 Struktura projektu
 
 ```
 meal-plans/
 ├── netlify/
-│   └── functions/
-│       ├── generate-pdf.js      # Generuje PDF z dat
-│       ├── pdf-save.js          # Ukládá URL do Airtable
-│       ├── download-pdf.js      # Endpoint pro stažení PDF
-│       └── test.js              # Test endpoint
+│   └── functions/              # Netlify serverless funkce
+│       ├── generate-pdf.js     # Generuje PDF z dat
+│       ├── pdf-save.js         # Ukládá URL do Airtable
+│       └── download-pdf.js     # Endpoint pro stažení PDF
 ├── templates/
-│   └── jidelnicek.html          # HTML šablona pro PDF
-├── package.json                 # Závislosti
-├── netlify.toml                 # Konfigurace Netlify
-└── README.md                    # Tento soubor
+│   └── jidelnicek.html         # HTML šablona pro PDF
+├── pdf/
+│   ├── originals/              # Originální PDF (backup)
+│   └── *.pdf                   # Zkomprimované PDF (~1MB)
+├── arch/                       # Archivované soubory
+├── img/
+│   ├── meals/                  # Obrázky jídel (PNG)
+│   └── logos/                  # Loga (SVG)
+├── fonts/                      # Fonty (Gambarino, Satoshi)
+├── scripts pro lokální vývoj:
+│   ├── generate-improved-pdf.js    # Hlavní generátor PDF
+│   ├── generate_all_pdfs.js        # Batch generování všech PDF
+│   ├── airtable-pdf-generation-script.js  # Airtable script
+│   └── compress_all_final.sh       # Komprese PDF
+├── package.json                # Závislosti
+├── netlify.toml               # Konfigurace Netlify
+└── README.md                  # Tento soubor
 ```
 
 ## 🔧 Technologie
@@ -52,26 +69,50 @@ cd meal-plans
 # Instalace závislostí
 npm install
 
-# Vytvoření .env souboru
+# Vytvoření .env souboru pro Airtable přístup
 echo "AIRTABLE_API_KEY=your_key" >> .env
 echo "AIRTABLE_BASE_ID=your_base_id" >> .env
 ```
 
-### 2. Deploy na Netlify
+### 2. Lokální generování PDF
+```bash
+# Generování jednotlivého PDF
+node generate-improved-pdf.js
+
+# Generování všech PDF ze všech záznamů
+node generate_all_pdfs.js
+
+# Komprese PDF (zachovává obrázky, cílí ~1MB)
+./compress_all_final.sh
+```
+
+### 3. Deploy na Netlify (produkce)
 1. Pushněte kód na GitHub
 2. Připojte GitHub repo v Netlify
 3. Nastavte environment variables:
    - `AIRTABLE_API_KEY`
    - `AIRTABLE_BASE_ID`
 
-### 3. Airtable nastavení
+### 4. Airtable nastavení
 1. Vytvořte Personal Access Token
 2. Přidejte pole typu "Attachment" pro PDF
 3. Nainstalujte Scripting Extension
 
 ## 📝 Použití
 
-### Airtable Script
+### Lokální workflow
+```bash
+# 1. Načtěte nejnovější data z Airtable a vygenerujte PDF
+node generate_all_pdfs.js
+
+# 2. Zkomprimujte PDF pro optimální velikost (~1MB)
+./compress_all_final.sh
+
+# 3. PDF jsou k dispozici ve složce pdf/
+ls -la pdf/*.pdf
+```
+
+### Airtable Script (pro Netlify produkci)
 ```javascript
 // Vložte do Airtable Scripting Extension
 const NETLIFY_FUNCTION_URL = 'https://kmfi-meals.netlify.app/.netlify/functions/pdf-save';
@@ -180,11 +221,32 @@ Generovaný layout jídelníčku má několik verzí podle typu šablony a počt
 - Pokud chybí obrázek jídla a má v šabloně být, použije se placeholder z `img/meals/placeholders`.
 - Informace v patičce se načítají ze separátního HTML pro snadnější editaci.
 
-## ⚡ Optimalizace
+## ⚡ Optimalizace a komprese
 
-- PDF se generuje dynamicky při každém stažení
+### PDF komprese
+- **Původní velikost**: 2-4MB na PDF
+- **Po kompresi**: ~0.7-1.1MB na PDF
+- **Zachovávají se obrázky** v dobré kvalitě
+- **Ghostscript nastavení**: JPEG kvalita 75%, auto filtering
+
+### Kompresní script
+```bash
+# Spustí kompresi všech PDF v pdf/ složce
+./compress_all_final.sh
+
+# Nastavení komprese (v scriptu):
+# - Bez downsamplingu obrázků
+# - JPEG kvalita 75%
+# - Automatická filtrace barev
+# - Optimalizace PDF struktury
+```
+
+### Performance
+- Lokální generování: ~2-3s na PDF
+- Netlify Functions: ~5-10s na PDF (cold start)
 - HTML šablona je vložena přímo v kódu (rychlejší)
-- Puppeteer používá optimalizovaný Chromium pro Lambda
+- Puppeteer používá optimalizovaný Chromium
+
 
 ## 🐛 Řešení problémů
 

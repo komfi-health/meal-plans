@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jídelníček - Zuzana Žiláková</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { font-family: Arial, sans-serif; font-size: 11pt; color: #333; margin: 0; padding: 0; }
+        .page { 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 15mm; 
+            background: white; 
+            position: relative; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            border-bottom: 2px solid #f0f0f0; 
+        }
+        .client-name { font-size: 24pt; font-weight: 300; }
+        .meta-info { text-align: right; font-size: 10pt; color: #666; }
+        
+        /* Content area that grows */
+        .content { flex: 1; margin-bottom: 120px; }
+        
+        /* Grid layouts */
+        .days-grid { 
+            display: grid; 
+            gap: 15px; 
+            margin-bottom: 30px;
+        }
+        .days-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .days-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        
+        /* Day cards */
+        .day-card { 
+            border: 1px solid #e0e0e0; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        .day-header { 
+            background: #f8f8f8; 
+            padding: 8px 15px; 
+            font-weight: bold; 
+            color: #555; 
+            border-bottom: 1px solid #eee; 
+        }
+        
+        /* Big cards layout (single meal type) */
+        .big-card-content {
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .big-meal-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin: 0 auto 15px;
+        }
+        .big-meal-title {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.3;
+        }
+        
+        /* Standard cards layout (multiple meal types with images) */
+        .meal-section { 
+            padding: 10px 15px; 
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        .meal-section:last-child { border-bottom: none; }
+        .meal-type-label { 
+            font-size: 9pt; 
+            color: #888; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+        }
+        .meal-content { display: flex; align-items: flex-start; gap: 10px; }
+        .meal-image { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 8px; 
+            object-fit: cover; 
+            flex-shrink: 0; 
+        }
+        .meal-details { flex: 1; }
+        .meal-title { font-weight: bold; margin-bottom: 4px; font-size: 10pt; }
+        .meal-items { list-style: none; padding-left: 0; margin: 0; }
+        .meal-items li { font-size: 9pt; color: #666; line-height: 1.4; }
+        
+        /* Text-only layout (no images) */
+        .text-only .meal-section { padding: 8px 12px; }
+        .text-only .meal-type-label { font-size: 8pt; margin-bottom: 2px; }
+        .text-only .meal-title { font-size: 9pt; }
+        .text-only .meal-items li { font-size: 8pt; line-height: 1.3; }
+        .text-only .day-card { min-height: auto; }
+        .text-only .days-grid { gap: 10px; }
+        
+        /* Footer */
+        .footer { 
+            position: absolute; 
+            bottom: 15mm; 
+            left: 15mm; 
+            right: 15mm; 
+            border-top: 2px solid #f0f0f0; 
+            padding-top: 15px; 
+        }
+        .contact-info { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: start; 
+            margin-bottom: 15px; 
+        }
+        .contact-person { font-weight: bold; font-size: 12pt; }
+        .contact-details { font-size: 10pt; color: #666; line-height: 1.5; }
+        .logo { height: 40px; }
+        .info-boxes { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            font-size: 9pt; 
+        }
+        .info-box { 
+            padding: 10px; 
+            background: #f8f8f8; 
+            border-radius: 5px; 
+        }
+        .info-box h4 { 
+            margin: 0 0 5px 0; 
+            color: #d4a574; 
+            font-size: 10pt; 
+        }
+        .info-box p { margin: 0; }
+        
+        /* Instructions */
+        .instructions { 
+            font-size: 8pt; 
+            color: #666; 
+            background: #fafafa; 
+            border-radius: 5px; 
+            padding: 4px 6px; 
+            margin-top: 4px; 
+        }
+        
+        /* Second page if needed */
+        .page-2 { page-break-before: always; }
+        
+        @media print { 
+            .page { margin: 0; page-break-after: always; }
+            .text-only { font-size: 9pt; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page text-only">
+        <div class="header">
+            <div class="client-name">Zuzana Žiláková</div>
+            <div class="meta-info">
+                <div>ID F_03</div>
+                <div>Datum donášky 2025-07-25</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            
+            
+            <!-- Text-only layout - no images -->
+            <div class="days-grid days-grid-3">
+                <div class="day-card">
+                    <div class="day-header">DEN 1</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Ovesná kaše s ovocem</div>
+                            <ul class="meal-items">
+                                <li>1 Kiwi</li>
+                                <li>1 Dr. Oetker Ovesná kaše Vanilka</li>
+                                <li>1/2 Olma Via Natur jogurt bílý BIO</li>
+                                <li>1/4 Mandle</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Ovocný salátek</div>
+                            <ul class="meal-items">
+                                <li>1 Milko Jogurt řecký bílý BIO</li>
+                                <li>1 Jablka</li>
+                                <li>1 Pomeranč</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Polévka hrášková s krutony</div>
+                            <ul class="meal-items">
+                                <li>1/5 Chléb Šumava balený krájený</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 2</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Míchaná vajíčka s pečivem, zelenina</div>
+                            <ul class="meal-items">
+                                <li>1/3 Vejce 6x</li>
+                                <li>1/5 Chléb Šumava balený krájený</li>
+                                <li>1/2 Paprika zelená</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Ovocný mix</div>
+                            <ul class="meal-items">
+                                <li>1 Nektarinky</li>
+                                <li>1/3 Ananas kousky</li>
+                                <li>1 Kiwi</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Cizrnová pomazánka, pečivo</div>
+                            <ul class="meal-items">
+                                <li>1 Hummus se semínky a rajčaty</li>
+                                <li>1/3 Rajčata Cherry</li>
+                                <li>1/5 Chléb Šumava balený krájený</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 3</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Ovesné sušenky s jogurtem</div>
+                            <ul class="meal-items">
+                                <li>1 Hollandia Selský jogurt jahoda</li>
+                                <li>1/2 Emco Ovesné sušenky kokosové</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Chléb s bylinkovou pomazánkou</div>
+                            <ul class="meal-items">
+                                <li>1/4 Penam Fit Chléb slunečnicový</li>
+                                <li>1/2 Patifu Pomazánka s bylinkami</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Chléb s lučinou a se šunkou</div>
+                            <ul class="meal-items">
+                                <li>1/3 Lučina Linie s vlákninou</li>
+                                <li>1/2 Fine Life Šunka výběrová dušená</li>
+                                <li>1/3 Penam Fit Chléb slunečnicový</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 4</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Rýžová kaše s čokoládou</div>
+                            <ul class="meal-items">
+                                <li>1 Emco Rýžová kaše čokoláda kokos</li>
+                                <li>1/3 Ananas kousky</li>
+                                <li>1/2 Olma Via Natur jogurt bílý BIO</li>
+                                <li>1/4 Mandle</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Čokoládový puding, ovoce</div>
+                            <ul class="meal-items">
+                                <li>1 High Protein puding čoko</li>
+                                <li>1 Banán</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Chléb s lučinou a se šunkou</div>
+                            <ul class="meal-items">
+                                <li>1/3 Penam Fit Chléb slunečnicový</li>
+                                <li>1/3 Lučina Linie s vlákninou</li>
+                                <li>1/2 Fine Life Šunka výběrová dušená</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 5</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Chléb s vajíčkem na tvrdo, zelenina</div>
+                            <ul class="meal-items">
+                                <li>1/3 Vejce 6x</li>
+                                <li>1/4 Penam Fit Chléb slunečnicový</li>
+                                <li>1/3 Okurka hadovka</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Žervé s paprikou, chléb, zelenina</div>
+                            <ul class="meal-items">
+                                <li>1/2 Paprika zelená</li>
+                                <li>1/3 Lučina Linie s vlákninou</li>
+                                <li>1/4 Penam Fit Chléb slunečnicový</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Zeleninový salát se sýrem cottage</div>
+                            <ul class="meal-items">
+                                <li>1/3 Okurka hadovka</li>
+                                <li>1/3 Rajčata Cherry</li>
+                                <li>1/2 Jihočeský Cottage</li>
+                                <li>1/3 Penam Fit Chléb slunečnicový</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 6</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Ovesné sušenky s jogurtem</div>
+                            <ul class="meal-items">
+                                <li>1 Jihočeský tvaroh a jogurt čokoláda</li>
+                                <li>1/2 Emco Ovesné sušenky kokosové</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Chléb s bylinkovou pomazánkou</div>
+                            <ul class="meal-items">
+                                <li>1/2 Patifu Pomazánka s bylinkami</li>
+                                <li>1/4 Penam Fit Chléb slunečnicový</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Polévka rajčatová se sýrem</div>
+                            <ul class="meal-items">
+                                <li>1/5 Chléb Šumava balený krájený</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-header">DEN 7</div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Snídaně</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Kefírové mléko, ovoce</div>
+                            <ul class="meal-items">
+                                <li>1 Nektarinky</li>
+                                <li>1 Mléko kefírové meruňka</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Dopolední svačina</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Tvarohový jogurt s ovocem</div>
+                            <ul class="meal-items">
+                                <li>1 Tvaroh a jogurt bílý</li>
+                                <li>1/3 Ananas kousky</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="meal-section">
+                        <div class="meal-type-label">Večeře</div>
+                        <div class="meal-details">
+                            <div class="meal-title">Zeleninový salát se sýrem cottage</div>
+                            <ul class="meal-items">
+                                <li>1/2 Jihočeský Cottage</li>
+                                <li>1/5 Chléb Šumava balený krájený</li>
+                                <li>1/3 Rajčata Cherry</li>
+                                <li>1/3 Okurka hadovka</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="contact-info">
+                <div>
+                    <div class="contact-person">Jiří Žilka</div>
+                    <div class="contact-details">
+                        734 602 600<br>
+                        zakaznici@budtekomfi.cz
+                    </div>
+                </div>
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTIwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeD0iNjAiIHk9IjI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNkNGE1NzQiPmtvbWZpPC90ZXh0Pgo8L3N2Zz4=" alt="komfi" class="logo">
+            </div>
+            <div class="info-boxes">
+                <div class="info-box">
+                    <h4>ZMĚNY</h4>
+                    <p>Rádi byste změnili objednávku nebo vyřadili konkrétní jídlo? Ozvěte se nám do pondělí 9:00, abyste stihli změnu ještě v daném týdnu.</p>
+                </div>
+                <div class="info-box">
+                    <h4>PRVNÍ OBJEDNÁVKA NA DOBÍRKU</h4>
+                    <p>Dostali jste první objednávku na dobírku a chutnalo Vám? Ozvěte se nám do pondělí 9:00 pomocí chatu na webu, emailem nebo případně telefonicky. Objednávka se automaticky neobnovuje.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
