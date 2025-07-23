@@ -1,6 +1,5 @@
 <svg width="117" height="128" viewBox="0 0 117 128" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="10.75" y="16" width="96" height="96" rx="24" fill="#FBD1C0"/>
-<g opacity="0.5">
 <mask id="mask0_13446_37192" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="34" y="40" width="49" height="48">
 <path d="M82.25 40.5V87.5H35.25V40.5H82.25Z" fill="white" stroke="#1E282D"/>
 </mask>
@@ -15,7 +14,6 @@
 <path d="M71.1094 61.9927L72.3735 57.2132" stroke="#F2672E" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M72.375 57.2155C72.375 57.2155 74.6394 51.0017 79.7048 53.1454C79.7048 53.1454 78.2552 59.6116 72.375 57.2155Z" stroke="#F2672E" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M40.4844 81.7798L59.7495 46.0921L67.187 50.1637" stroke="#F2672E" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
 </g>
 </g>
 </svg>
