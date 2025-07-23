@@ -844,7 +844,7 @@ async function generatePDF(idCircuit) {
         const template = handlebars.compile(htmlTemplate);
         const html = template(templateData);
         
-        const debugFile = `preview/${idCircuit}-improved-debug.html`;
+        const debugFile = `local-preview/html/${idCircuit}-improved-debug.html`;
         await fs.writeFile(debugFile, html);
         console.log(`Debug HTML saved to ${debugFile}`);
         
@@ -867,7 +867,7 @@ async function generatePDF(idCircuit) {
         await browser.close();
         
         const klientName = templateData.klient.replace(/[^a-zA-Z0-9\u00C0-\u017F\s]/g, '').replace(/\s+/g, ' ').trim();
-        const filename = `pdf/${idCircuit}-${klientName}.pdf`;
+        const filename = `local-preview/pdf/${idCircuit}-${klientName}.pdf`;
         await fs.writeFile(filename, pdf);
         console.log(`PDF saved as ${filename}`);
         

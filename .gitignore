@@ -29,7 +29,5 @@ yarn-error.log*
 dist/
 build/
 
-# Generated PDFs and archives
-pdf/
-*.pdf
-*.zip
+# Local testing and preview files
+local-preview/
