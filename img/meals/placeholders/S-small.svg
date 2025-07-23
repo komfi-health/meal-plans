@@ -3,8 +3,8 @@
 <path d="M16.25 15.5V0.5H1.25V15.5H16.25Z" fill="white" stroke="white"/>
 </mask>
 <g mask="url(#mask0_6288_12566)">
-<path d="M4.56537 8C4.56537 5.92031 6.43862 0.46875 8.7494 0.46875C11.0602 0.46875 12.9334 5.92031 12.9334 8" stroke="#1E282D" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M13.456 8C13.456 10.5996 11.3486 12.707 8.74898 12.707C6.14935 12.707 4.04195 10.5996 4.04195 8H13.456Z" stroke="#1E282D" stroke-miterlimit="10" stroke-linejoin="round"/>
-<path d="M5.92614 15.5312C5.92614 13.9715 7.19058 12.707 8.75036 12.707C10.3101 12.707 11.5746 13.9715 11.5746 15.5312H5.92614Z" stroke="#1E282D" stroke-miterlimit="10" stroke-linejoin="round"/>
+<path d="M4.56537 8C4.56537 5.92031 6.43862 0.46875 8.7494 0.46875C11.0602 0.46875 12.9334 5.92031 12.9334 8" stroke="#053B3B" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.456 8C13.456 10.5996 11.3486 12.707 8.74898 12.707C6.14935 12.707 4.04195 10.5996 4.04195 8H13.456Z" stroke="#053B3B" stroke-miterlimit="10" stroke-linejoin="round"/>
+<path d="M5.92614 15.5312C5.92614 13.9715 7.19058 12.707 8.75036 12.707C10.3101 12.707 11.5746 13.9715 11.5746 15.5312H5.92614Z" stroke="#053B3B" stroke-miterlimit="10" stroke-linejoin="round"/>
 </g>
 </svg>

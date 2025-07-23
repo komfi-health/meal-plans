@@ -120,7 +120,7 @@ const htmlTemplate = `<!DOCTYPE html>
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 15px; 
+            margin-bottom: 16px; 
             padding-bottom: 8px; 
             border-bottom: 2px solid #f0f0f0; 
             background: white;
@@ -141,7 +141,7 @@ const htmlTemplate = `<!DOCTYPE html>
         .days-grid { 
             display: grid; 
             gap: 8px; 
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             align-items: start;
         }
         .days-grid-2 { 
@@ -179,7 +179,7 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         .day-header { 
             background: #F1E4BE; 
-            padding: 3px 18px; 
+            padding: 4px 16px; 
             font-weight: 700; 
             color: #555; 
             border-bottom: 1px solid #eee;
@@ -189,8 +189,8 @@ const htmlTemplate = `<!DOCTYPE html>
             gap: 4px;
         }
         .day-header-icon {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             flex-shrink: 0;
         }
         
@@ -230,36 +230,36 @@ const htmlTemplate = `<!DOCTYPE html>
             color: #888; 
             text-transform: uppercase; 
             font-weight: 600; 
-            margin-bottom: 6px; 
+            margin-bottom: 8px; 
             letter-spacing: 0.8px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             padding-left: 0px;
         }
         .meal-type-icon {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
             flex-shrink: 0;
-            opacity: 0.5;
+            opacity: 1;
         }
-        .meal-content { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
+        .meal-content { display: flex; align-items: flex-start; gap: 16px; flex: 1; }
         .meal-image { 
-            width: 75px; 
-            height: 75px; 
-            border-radius: 6px; 
+            width: 76px; 
+            height: 76px; 
+            border-radius: 8px; 
             object-fit: cover; 
             flex-shrink: 0; 
         }
         .meal-details { flex: 1; }
-        .meal-title { font-weight: 700; margin-bottom: 6px; font-size: 10pt; color: #333; letter-spacing: -0.01em; }
+        .meal-title { font-weight: 700; margin-bottom: 8px; font-size: 10pt; color: #333; letter-spacing: -0.01em; }
         .meal-items { list-style: none; padding-left: 0; margin: 0 0 8px 0; }
         .meal-items li { font-size: 7pt; color: #666; line-height: 1.2; margin-bottom: 0px; font-weight: 400; }
         
         /* Text-only layout - 2 columns with proper pagination */
         .text-image-mix .days-grid { 
             grid-template-columns: repeat(2, 1fr) !important; 
-            gap: 6px;
+            gap: 12px;
         }
         .text-image-mix .meal-section { 
             padding: 12px 16px; 
@@ -267,18 +267,18 @@ const htmlTemplate = `<!DOCTYPE html>
             flex-direction: column;
         }
         .text-image-mix .meal-type-label { font-size: 8pt; margin-bottom: 4px; font-weight: 500; letter-spacing: 0.5px; }
-        .text-image-mix .meal-title { font-size: 10pt; font-weight: 700; margin-bottom: 6px; color: #333; letter-spacing: -0.01em; }
-        .text-image-mix .meal-items li { font-size: 8pt; line-height: 1.3; margin-bottom: 1px; font-weight: 400; }
+        .text-image-mix .meal-title { font-size: 10pt; font-weight: 700; margin-bottom: 8px; color: #333; letter-spacing: -0.01em; }
+        .text-image-mix .meal-items li { font-size: 8pt; line-height: 1.3; margin-bottom: 0px; font-weight: 400; }
         .text-image-mix .day-card { 
             min-height: auto; 
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        .text-image-mix .meal-content { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
+        .text-image-mix .meal-content { display: flex; align-items: flex-start; gap: 12px; flex: 1; }
         .text-image-mix .meal-image { 
             width: 60px; 
             height: 60px; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             object-fit: cover; 
             flex-shrink: 0; 
         }
@@ -298,8 +298,8 @@ const htmlTemplate = `<!DOCTYPE html>
             text-align: center;
         }
         .image-only .meal-image {
-            width: 90px;
-            height: 90px;
+            width: 88px;
+            height: 88px;
             border-radius: 8px;
             object-fit: cover;
             margin: 0 auto 8px;
@@ -317,9 +317,10 @@ const htmlTemplate = `<!DOCTYPE html>
             color: #666; 
             background: #fafafa; 
             border-radius: 4px; 
-            padding: 5px 8px; 
-            margin-top: 5px;
+            padding: 4px 8px; 
+            margin-top: 4px;
             border-left: 2px solid #ddd;
+            max-width: 200px;
         }
         .instructions-label {
             font-size: 6pt;
@@ -353,7 +354,7 @@ const htmlTemplate = `<!DOCTYPE html>
         .footer-left {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .footer-contact {
             font-size: 9pt;
@@ -380,7 +381,7 @@ const htmlTemplate = `<!DOCTYPE html>
         .footer-logos {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-direction: row;
         }
         .footer-logo-bistro {

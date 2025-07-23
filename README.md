@@ -82,6 +82,21 @@ PDF generátor automaticky vybírá optimální layout podle typu jídelníčku:
 - 3 sloupce s obrázky a názvy
 - Minimální text, maximální přehlednost
 
+## 📏 Design System - 4px Grid
+
+Všechny velikosti, mezery a odsazení v PDF generátoru používají **násobky 4px**. Toto pravidlo zajišťuje konzistentní vizuální rytmus a lepší zarovnání prvků.
+
+### Příklady použití:
+- Mezery: 4px, 8px, 12px, 16px, 20px...
+- Padding: 4px, 8px, 12px, 16px...
+- Velikosti ikon: 4px, 8px, 12px, 16px...
+- Border radius: 4px, 8px, 12px, 16px...
+
+### Výjimky:
+- Font sizes (používají pt jednotky)
+- Border widths (1px, 2px)
+- Line heights (mohou být desetinná čísla)
+
 ## 🛠️ Instalace a nastavení
 
 ### 1. Lokální vývoj
