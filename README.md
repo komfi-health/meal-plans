@@ -58,6 +58,30 @@ meal-plans/
 - **Airtable API** - Čtení dat a ukládání PDF
 - **Node.js 18+** - Runtime
 
+## 📐 Typy layoutů
+
+PDF generátor automaticky vybírá optimální layout podle typu jídelníčku:
+
+### 1. **Standard Layout** (výchozí)
+- Pro běžné jídelníčky (např. 5x-O, 5x-S-O-V)
+- 2 sloupce, detailní informace o jídlech
+- Obrázky, názvy, ingredience a návod k přípravě
+
+### 2. **Big Cards Layout** 
+- Pro krátké jídelníčky s jedním typem jídla (např. 4x-O)
+- Velké karty s velkými obrázky
+- Pouze název jídla bez detailů
+
+### 3. **Text-Image-Mix Layout**
+- Pro komplexní jídelníčky (4+ typů jídel nebo 7+ dní s více typy)
+- Kompaktní zobrazení s malými obrázky
+- 2 karty na stránku, automatické stránkování
+
+### 4. **Image-Only Layout**
+- Pro dlouhé jídelníčky s jedním typem (např. 5x-O, 7x-O)
+- 3 sloupce s obrázky a názvy
+- Minimální text, maximální přehlednost
+
 ## 🛠️ Instalace a nastavení
 
 ### 1. Lokální vývoj

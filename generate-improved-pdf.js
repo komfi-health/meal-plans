@@ -154,11 +154,11 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         
         /* Force equal heights only for cards in same row, not whole grid - standard layouts only */
-        .page:not(.text-only) .days-grid {
+        .page:not(.text-image-mix) .days-grid {
             align-items: stretch;
         }
-        /* Reset alignment for text-only to prevent large gaps */
-        .text-only .days-grid {
+        /* Reset alignment for text-image-mix to prevent large gaps */
+        .text-image-mix .days-grid {
             align-items: start;
         }
         
@@ -256,30 +256,58 @@ const htmlTemplate = `<!DOCTYPE html>
         .meal-items li { font-size: 7pt; color: #666; line-height: 1.2; margin-bottom: 0px; font-weight: 400; }
         
         /* Text-only layout - 2 columns with proper pagination */
-        .text-only .days-grid { 
+        .text-image-mix .days-grid { 
             grid-template-columns: repeat(2, 1fr) !important; 
             gap: 6px;
         }
-        .text-only .meal-section { 
+        .text-image-mix .meal-section { 
             padding: 12px 16px; 
             display: flex;
             flex-direction: column;
         }
-        .text-only .meal-type-label { font-size: 8pt; margin-bottom: 4px; font-weight: 500; letter-spacing: 0.5px; }
-        .text-only .meal-title { font-size: 10pt; font-weight: 700; margin-bottom: 6px; color: #333; letter-spacing: -0.01em; }
-        .text-only .meal-items li { font-size: 8pt; line-height: 1.3; margin-bottom: 1px; font-weight: 400; }
-        .text-only .day-card { 
+        .text-image-mix .meal-type-label { font-size: 8pt; margin-bottom: 4px; font-weight: 500; letter-spacing: 0.5px; }
+        .text-image-mix .meal-title { font-size: 10pt; font-weight: 700; margin-bottom: 6px; color: #333; letter-spacing: -0.01em; }
+        .text-image-mix .meal-items li { font-size: 8pt; line-height: 1.3; margin-bottom: 1px; font-weight: 400; }
+        .text-image-mix .day-card { 
             min-height: auto; 
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        .text-only .meal-content { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
-        .text-only .meal-image { 
+        .text-image-mix .meal-content { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
+        .text-image-mix .meal-image { 
             width: 60px; 
             height: 60px; 
             border-radius: 6px; 
             object-fit: cover; 
             flex-shrink: 0; 
+        }
+        
+        /* Image-only layout - 3 columns grid for 5+ days */
+        .image-only .days-grid { 
+            grid-template-columns: repeat(3, 1fr) !important; 
+            gap: 8px;
+        }
+        .image-only .day-card {
+            min-height: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .image-only .meal-section {
+            padding: 16px;
+            text-align: center;
+        }
+        .image-only .meal-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 0 auto 8px;
+        }
+        .image-only .meal-title {
+            font-size: 9pt;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: -0.01em;
         }
         
         /* Instructions */
@@ -407,29 +435,34 @@ const htmlTemplate = `<!DOCTYPE html>
                 max-height: calc(297mm - 70mm);
                 overflow: hidden;
             }
-            /* Allow multi-page flow for text-only layouts */
-            .text-only .content {
+            /* Allow multi-page flow for text-image-mix layouts */
+            .text-image-mix .content {
                 margin-bottom: 35mm;
                 max-height: none;
                 overflow: visible;
             }
             /* Text-only pagination - force page breaks and margins */
-            .text-only .days-grid .day-card:nth-child(3),
-            .text-only .days-grid .day-card:nth-child(5),
-            .text-only .days-grid .day-card:nth-child(7) {
+            .text-image-mix .days-grid .day-card:nth-child(3),
+            .text-image-mix .days-grid .day-card:nth-child(5),
+            .text-image-mix .days-grid .day-card:nth-child(7) {
                 page-break-before: always;
                 margin-top: 35mm;
             }
             /* Add margin-top for even cards on new pages */
-            .text-only .days-grid .day-card:nth-child(4),
-            .text-only .days-grid .day-card:nth-child(6) {
+            .text-image-mix .days-grid .day-card:nth-child(4),
+            .text-image-mix .days-grid .day-card:nth-child(6) {
+                margin-top: 35mm;
+            }
+            /* Image-only pagination - 6 cards per page for 7-day */
+            .image-only .days-grid .day-card:nth-child(7) {
+                page-break-before: always;
                 margin-top: 35mm;
             }
         }
     </style>
 </head>
 <body>
-    <div class="page {{#isLayoutType layoutType 'text-only'}}text-only{{/isLayoutType}}{{#if (eq daysCount 7)}} seven-day{{/if}}">
+    <div class="page {{#isLayoutType layoutType 'text-image-mix'}}text-image-mix{{/isLayoutType}}{{#isLayoutType layoutType 'image-only'}}image-only{{/isLayoutType}}{{#if (eq daysCount 7)}} seven-day{{/if}}">
         <div class="header">
             <div class="client-name">{{klient}}</div>
             <div class="meta-info">
@@ -499,7 +532,7 @@ const htmlTemplate = `<!DOCTYPE html>
             </div>
             {{/isLayoutType}}
             
-            {{#isLayoutType layoutType 'text-only'}}
+            {{#isLayoutType layoutType 'text-image-mix'}}
             <!-- Text-only layout - max 2 columns -->
             <div class="days-grid days-grid-2">
                 {{#each days}}
@@ -534,6 +567,27 @@ const htmlTemplate = `<!DOCTYPE html>
                         {{/if}}
                     </div>
                     {{/each}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/isLayoutType}}
+            
+            {{#isLayoutType layoutType 'image-only'}}
+            <!-- Image-only layout - 3 columns for 5+ days -->
+            <div class="days-grid days-grid-3">
+                {{#each days}}
+                <div class="day-card" style="--meal-count: 1">
+                    <div class="day-header">{{{../calendarIcon}}}DEN {{this.den}}</div>
+                    <div class="day-card-content">
+                    {{#with this.meals.[0]}}
+                    <div class="meal-section">
+                        {{#if this.image}}
+                        <img src="{{this.image}}" alt="{{this.title}}" class="meal-image">
+                        {{/if}}
+                        <div class="meal-title">{{this.title}}</div>
+                    </div>
+                    {{/with}}
                     </div>
                 </div>
                 {{/each}}
@@ -576,15 +630,21 @@ const htmlTemplate = `<!DOCTYPE html>
             const dayCards = Array.from(grid.querySelectorAll('.day-card'));
             if (dayCards.length === 0) return;
             
-            // Skip synchronization for text-only layouts to prevent large gaps
-            const isTextOnly = document.querySelector('.page.text-only');
-            if (isTextOnly) {
-                // For text-only layouts, group cards by page (2 cards per page)
+            // Skip synchronization for text-image-mix layouts to prevent large gaps
+            const isTextImageMix = document.querySelector('.page.text-image-mix');
+            if (isTextImageMix) {
+                // For text-image-mix layouts, group cards by page (2 cards per page)
                 const cardsPerPage = 2;
                 for (let pageStart = 0; pageStart < dayCards.length; pageStart += cardsPerPage) {
                     const pageCards = dayCards.slice(pageStart, pageStart + cardsPerPage);
                     synchronizeCardGroupHeights(pageCards);
                 }
+                return;
+            }
+            
+            // Skip synchronization for image-only layouts
+            const isImageOnly = document.querySelector('.page.image-only');
+            if (isImageOnly) {
                 return;
             }
             
@@ -635,10 +695,10 @@ const htmlTemplate = `<!DOCTYPE html>
         
         // Run after DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Add single-page-only class for 4-day non-text-only layouts only
+            // Add single-page-only class for 4-day non-text-image-mix layouts only
             const page = document.querySelector('.page');
             const dayCards = document.querySelectorAll('.day-card');
-            if (page && !page.classList.contains('text-only') && dayCards.length === 4) {
+            if (page && !page.classList.contains('text-image-mix') && dayCards.length === 4) {
                 page.classList.add('single-page-only');
             }
             
@@ -668,17 +728,18 @@ function determineLayoutType(templateType, daysCount) {
     
     const mealTypes = match[2].split('-');
     
-    // Exception for 7x-O: use standard layout instead of text-only
-    if (templateType === '7x-O') {
-        return 'standard';
+    
+    // Text-image-mix: 4+ meal types OR 7+ days (except single meal type)
+    if (mealTypes.length >= 4 || (daysCount >= 7 && mealTypes.length > 1)) {
+        return 'text-image-mix';
     }
     
-    // Text-only: 4+ meal types OR 7+ days  
-    if (mealTypes.length >= 4 || daysCount >= 7) {
-        return 'text-only';
+    // Image-only: only one meal type with 5+ days
+    if (mealTypes.length === 1 && daysCount >= 5) {
+        return 'image-only';
     }
     
-    // Big cards: only one meal type 
+    // Big cards: only one meal type with less than 5 days
     if (mealTypes.length === 1) {
         return 'big-cards';
     }
