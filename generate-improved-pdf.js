@@ -238,9 +238,10 @@ const htmlTemplate = `<!DOCTYPE html>
             padding-left: 0px;
         }
         .meal-type-icon {
-            width: 10px;
-            height: 10px;
+            width: 5px;
+            height: 5px;
             flex-shrink: 0;
+            opacity: 0.5;
         }
         .meal-content { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
         .meal-image { 
