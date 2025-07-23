@@ -1,12 +1,8 @@
-<svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0_6288_12638" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="17" height="16">
-<path d="M0.75 -3.05176e-05H16.75V16H0.75V-3.05176e-05Z" fill="white"/>
-</mask>
-<g mask="url(#mask0_6288_12638)">
-<path d="M12.3743 7.875L16.1243 4.12499" stroke="#234070" stroke-miterlimit="10"/>
-<path d="M16.1243 7.87498H1.37427C1.37427 10.8986 3.52155 13.4198 6.37428 13.999V15.375H11.1243V13.999C13.977 13.4198 16.1243 10.8986 16.1243 7.87498Z" stroke="#234070" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M4.37417 0.445302C4.37417 0.445302 3.12417 1.6953 4.37417 2.94531C5.62417 4.19531 4.37417 5.44531 4.37417 5.44531" stroke="#234070" stroke-miterlimit="10"/>
-<path d="M7.49917 0.445302C7.49917 0.445302 6.24917 1.6953 7.49917 2.94531C8.74917 4.19531 7.49917 5.44531 7.49917 5.44531" stroke="#234070" stroke-miterlimit="10"/>
-<path d="M10.6251 0.445302C10.6251 0.445302 9.37512 1.6953 10.6251 2.94531C11.8751 4.19531 10.6251 5.44531 10.6251 5.44531" stroke="#234070" stroke-miterlimit="10"/>
-</g>
+<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="9.35938" cy="9.67822" r="9" fill="#FDEBC6"/>
+<path d="M11.1328 9.66016L12.9694 7.71361" stroke="#191C1D" stroke-width="0.75" stroke-miterlimit="10"/>
+<path d="M12.9701 9.66012H5.74609C5.74609 11.2296 6.79775 12.5383 8.1949 12.839V13.5532H10.5213V12.839C11.9184 12.5383 12.9701 11.2296 12.9701 9.66012Z" stroke="#191C1D" stroke-width="0.75" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M7.2135 5.80304C7.2135 5.80304 6.60129 6.45189 7.2135 7.10074C7.8257 7.74959 7.2135 8.39844 7.2135 8.39844" stroke="#191C1D" stroke-width="0.75" stroke-miterlimit="10"/>
+<path d="M8.74475 5.80304C8.74475 5.80304 8.13254 6.45189 8.74475 7.10074C9.35695 7.74959 8.74475 8.39844 8.74475 8.39844" stroke="#191C1D" stroke-width="0.75" stroke-miterlimit="10"/>
+<path d="M10.2721 5.80304C10.2721 5.80304 9.65989 6.45189 10.2721 7.10074C10.8843 7.74959 10.2721 8.39844 10.2721 8.39844" stroke="#191C1D" stroke-width="0.75" stroke-miterlimit="10"/>
 </svg>

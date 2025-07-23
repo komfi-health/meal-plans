@@ -1,13 +1,13 @@
-<svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="16.75" y="16" width="96" height="96" rx="24" fill="#D5E6C7"/>
-<g opacity="0.31">
-<mask id="mask0_6288_12473" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="45" y="45" width="39" height="38">
-<path d="M83 82.25V45.75H46.5V82.25H83Z" fill="white" stroke="white" stroke-width="1.5"/>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16" y="16" width="96" height="96" rx="24" fill="#ECF6FA"/>
+<g opacity="0.5">
+<mask id="mask0_13446_37178" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="45" y="45" width="38" height="38">
+<path d="M82.25 82.25V45.75H45.75V82.25H82.25Z" fill="white" stroke="white" stroke-width="1.5"/>
 </mask>
-<g mask="url(#mask0_6288_12473)">
-<path d="M54.8114 64C54.8114 59.0607 59.2604 46.1133 64.7485 46.1133C70.2366 46.1133 74.6856 59.0607 74.6856 64" stroke="#053B3B" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M75.9267 64.0005C75.9267 70.1746 70.9216 75.1797 64.7475 75.1797C58.5734 75.1797 53.5683 70.1746 53.5683 64.0005H75.9267Z" stroke="#053B3B" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
-<path d="M58.0433 81.8867C58.0433 78.1822 61.0464 75.1792 64.7508 75.1792C68.4553 75.1792 71.4584 78.1822 71.4584 81.8867H58.0433Z" stroke="#053B3B" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
+<g mask="url(#mask0_13446_37178)">
+<path d="M54.0586 64C54.0586 59.0607 58.5076 46.1133 63.9957 46.1133C69.4838 46.1133 73.9327 59.0607 73.9327 64" stroke="#1C8CBB" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M75.1748 63.9995C75.1748 70.1736 70.1697 75.1787 63.9956 75.1787C57.8215 75.1787 52.8164 70.1736 52.8164 63.9995H75.1748Z" stroke="#1C8CBB" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
+<path d="M57.293 81.8867C57.293 78.1822 60.296 75.1792 64.0005 75.1792C67.705 75.1792 70.708 78.1822 70.708 81.8867H57.293Z" stroke="#1C8CBB" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
 </g>
 </g>
 </svg>
