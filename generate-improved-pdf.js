@@ -113,7 +113,7 @@ const htmlTemplate = `<!DOCTYPE html>
             overflow: hidden;
         }
         .header { 
-            position: fixed;
+            position: absolute;
             top: 8mm;
             left: 10mm;
             right: 10mm;
@@ -132,9 +132,10 @@ const htmlTemplate = `<!DOCTYPE html>
         
         /* Content area - adjusted margin for proper footer placement */
         .content { 
-            margin: 35mm 10mm 35mm 10mm;
+            padding: 40mm 10mm 35mm 10mm;
             position: relative;
             z-index: 1;
+            min-height: calc(297mm - 40mm - 35mm);
         }
         
         /* Grid layouts with synchronized meal section heights */
@@ -171,6 +172,8 @@ const htmlTemplate = `<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             height: fit-content;
+            width: 100%;
+            box-sizing: border-box;
         }
         .day-card-content {
             display: flex;
@@ -259,11 +262,12 @@ const htmlTemplate = `<!DOCTYPE html>
         .meal-items { list-style: none; padding-left: 0; margin: 0 0 8px 0; }
         .meal-items li { font-size: 7pt; color: #666; line-height: 1.2; margin-bottom: 0px; font-weight: 400; }
         
-        /* Text-image-mix layout - flexible column layout */
+        /* Text-image-mix layout - 2 column grid */
         .text-image-mix .days-grid { 
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+            align-items: start;
         }
         .text-image-mix .meal-section { 
             padding: 12px 16px; 
@@ -338,14 +342,14 @@ const htmlTemplate = `<!DOCTYPE html>
         
         /* Compact Footer - positioned for each page */
         .footer { 
-            position: fixed; 
-            bottom: 5mm; 
+            position: absolute; 
+            bottom: 8mm; 
             left: 10mm; 
             right: 10mm; 
             border-top: 1px solid #E9DFD5; 
             padding-top: 3mm; 
             font-size: 6pt;
-            height: 25mm;
+            height: 20mm;
             background: white;
             z-index: 1000;
         }
@@ -426,15 +430,11 @@ const htmlTemplate = `<!DOCTYPE html>
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
-            .footer { position: fixed; bottom: 5mm; }
-            .header { position: fixed; top: 8mm; }
-            /* Apply margin-top for multi-page layouts */
-            .days-grid-2 .day-card:nth-child(n+5) {
-                margin-top: 35mm;
-            }
-            /* For 7-day templates, disable all margin-top to keep everything on one page */
-            .seven-day .days-grid-2 .day-card:nth-child(n+5) {
-                margin-top: 0;
+            .footer { position: absolute; bottom: 8mm; }
+            .header { position: absolute; top: 8mm; }
+            /* Multi-page layouts flow naturally */
+            .page:nth-child(n+2) {
+                padding-top: 40mm;
             }
             /* Constrain content to single page for short layouts only */
             .page.single-page-only .content {
@@ -469,12 +469,12 @@ const htmlTemplate = `<!DOCTYPE html>
             .day-card {
                 page-break-after: auto;
             }
-            /* Ensure proper top margin on new pages */
-            @page :first {
-                margin-top: 45mm;
+            /* Ensure proper spacing on all pages */
+            .page { 
+                page-break-after: always;
             }
-            @page :left, @page :right {
-                margin-top: 35mm;
+            .page:last-child {
+                page-break-after: auto;
             }
         }
     </style>
