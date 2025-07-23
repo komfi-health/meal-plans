@@ -764,7 +764,7 @@ async function generatePDF(idCircuit) {
         const template = handlebars.compile(htmlTemplate);
         const html = template(templateData);
         
-        const debugFile = `${idCircuit}-improved-debug.html`;
+        const debugFile = `preview/${idCircuit}-improved-debug.html`;
         await fs.writeFile(debugFile, html);
         console.log(`Debug HTML saved to ${debugFile}`);
         
