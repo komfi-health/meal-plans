@@ -44,6 +44,14 @@ handlebars.registerHelper('eq', function(a, b) {
     return a === b;
 });
 
+handlebars.registerHelper('mod', function(a, b) {
+    return a % b;
+});
+
+handlebars.registerHelper('gt', function(a, b) {
+    return a > b;
+});
+
 // Improved HTML Template with better layout
 const htmlTemplate = `<!DOCTYPE html>
 <html lang="cs">
@@ -93,12 +101,11 @@ const htmlTemplate = `<!DOCTYPE html>
         body { font-family: 'Satoshi'; font-size: 11pt; color: #333; margin: 0; padding: 0; }
         .page { 
             width: 210mm; 
-            height: 297mm;
+            min-height: 297mm;
             background: white; 
             position: relative; 
             box-sizing: border-box;
             padding: 0;
-            overflow: hidden;
         }
         /* Single page constraint only for short 4-day layouts */
         .page.single-page-only { 
@@ -128,7 +135,6 @@ const htmlTemplate = `<!DOCTYPE html>
             margin: 35mm 10mm 35mm 10mm;
             position: relative;
             z-index: 1;
-            page-break-after: avoid;
         }
         
         /* Grid layouts with synchronized meal section heights */
@@ -223,17 +229,17 @@ const htmlTemplate = `<!DOCTYPE html>
             font-size: 8pt; 
             color: #888; 
             text-transform: uppercase; 
-            font-weight: 500; 
+            font-weight: 600; 
             margin-bottom: 6px; 
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding-left: 8px;
+            gap: 6px;
+            padding-left: 0px;
         }
         .meal-type-icon {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             flex-shrink: 0;
         }
         .meal-content { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
@@ -249,9 +255,10 @@ const htmlTemplate = `<!DOCTYPE html>
         .meal-items { list-style: none; padding-left: 0; margin: 0 0 8px 0; }
         .meal-items li { font-size: 7pt; color: #666; line-height: 1.2; margin-bottom: 0px; font-weight: 400; }
         
-        /* Text-only layout - max 2 columns, prevent page breaks */
+        /* Text-only layout - 2 columns with proper pagination */
         .text-only .days-grid { 
             grid-template-columns: repeat(2, 1fr) !important; 
+            gap: 6px;
         }
         .text-only .meal-section { 
             padding: 12px 16px; 
@@ -266,7 +273,6 @@ const htmlTemplate = `<!DOCTYPE html>
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        .text-only .days-grid { gap: 6px; }
         .text-only .meal-content { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
         .text-only .meal-image { 
             width: 60px; 
@@ -396,10 +402,6 @@ const htmlTemplate = `<!DOCTYPE html>
             .seven-day .days-grid-2 .day-card:nth-child(n+5) {
                 margin-top: 0;
             }
-            /* Text-only layouts: start new page after every 2 cards */
-            .text-only .days-grid .day-card:nth-child(n+3):nth-child(odd) {
-                margin-top: 35mm;
-            }
             /* Constrain content to single page for short layouts only */
             .page.single-page-only .content {
                 max-height: calc(297mm - 70mm);
@@ -408,6 +410,20 @@ const htmlTemplate = `<!DOCTYPE html>
             /* Allow multi-page flow for text-only layouts */
             .text-only .content {
                 margin-bottom: 35mm;
+                max-height: none;
+                overflow: visible;
+            }
+            /* Text-only pagination - force page breaks and margins */
+            .text-only .days-grid .day-card:nth-child(3),
+            .text-only .days-grid .day-card:nth-child(5),
+            .text-only .days-grid .day-card:nth-child(7) {
+                page-break-before: always;
+                margin-top: 35mm;
+            }
+            /* Add margin-top for even cards on new pages */
+            .text-only .days-grid .day-card:nth-child(4),
+            .text-only .days-grid .day-card:nth-child(6) {
+                margin-top: 35mm;
             }
         }
     </style>
@@ -619,10 +635,10 @@ const htmlTemplate = `<!DOCTYPE html>
         
         // Run after DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Add single-page-only class for 4-day non-text-only layouts AND 7-day layouts
+            // Add single-page-only class for 4-day non-text-only layouts only
             const page = document.querySelector('.page');
             const dayCards = document.querySelectorAll('.day-card');
-            if (page && !page.classList.contains('text-only') && (dayCards.length === 4 || dayCards.length === 7)) {
+            if (page && !page.classList.contains('text-only') && dayCards.length === 4) {
                 page.classList.add('single-page-only');
             }
             
@@ -756,12 +772,15 @@ async function transformDataForTemplate(menuData) {
             if (item['@image'] && item['@image'] !== 'img/meals/.png') {
                 const imagePath = item['@image'];
                 if (imagePath.includes('/')) {
-                    meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${imagePath}`;
+                    // For paths like img/meals/015.png, replace with img/meals/jpeg/015.jpg
+                    const jpegPath = imagePath.replace('img/meals/', 'img/meals/jpeg/').replace('.png', '.jpg');
+                    meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/${jpegPath}`;
                 } else {
-                    meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/${imagePath}`;
+                    // For simple filenames like 015.png, use jpeg folder
+                    meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/jpeg/${imagePath.replace('.png', '.jpg')}`;
                 }
             } else {
-                meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/placeholders/${mealType}.png`;
+                meal.image = `https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/placeholders/${mealType}.svg`;
             }
         }
         
