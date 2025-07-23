@@ -11,6 +11,30 @@ const tableId = 'tblCHxatBEyaspzR3';
 // Configure Airtable
 const base = new Airtable({ apiKey: apiKey }).base(baseId);
 
+// Load SVG icons and cache them
+const svgCache = {};
+
+async function loadSvgIcon(iconType) {
+    if (svgCache[iconType]) {
+        return svgCache[iconType];
+    }
+    
+    try {
+        const svgPath = `img/meals/placeholders/${iconType}-small.svg`;
+        const svgContent = await fs.readFile(svgPath, 'utf8');
+        svgCache[iconType] = svgContent;
+        return svgContent;
+    } catch (error) {
+        console.warn(`Could not load SVG for ${iconType}:`, error.message);
+        return null;
+    }
+}
+
+// Calendar icon SVG (Material Design - filled)
+const calendarIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>`;
+
 // Register Handlebars helpers
 handlebars.registerHelper('isLayoutType', function(layout, type, options) {
     return layout === type ? options.fn(this) : options.inverse(this);
@@ -154,6 +178,14 @@ const htmlTemplate = `<!DOCTYPE html>
             color: #555; 
             border-bottom: 1px solid #eee;
             font-size: 7pt;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .day-header-icon {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
         }
         
         /* Big cards layout (single meal type) - much bigger */
@@ -194,6 +226,15 @@ const htmlTemplate = `<!DOCTYPE html>
             font-weight: 500; 
             margin-bottom: 6px; 
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-left: 8px;
+        }
+        .meal-type-icon {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
         }
         .meal-content { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
         .meal-image { 
@@ -355,7 +396,8 @@ const htmlTemplate = `<!DOCTYPE html>
             .seven-day .days-grid-2 .day-card:nth-child(n+5) {
                 margin-top: 0;
             }
-            .text-only .days-grid .day-card:nth-child(n+3) {
+            /* Text-only layouts: start new page after every 2 cards */
+            .text-only .days-grid .day-card:nth-child(n+3):nth-child(odd) {
                 margin-top: 35mm;
             }
             /* Constrain content to single page for short layouts only */
@@ -386,7 +428,7 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="days-grid days-grid-2">
                 {{#each days}}
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN {{this.den}}</div>
+                    <div class="day-header">{{{../calendarIcon}}}DEN {{this.den}}</div>
                     <div class="big-card-content">
                         {{#with this.meals.[0]}}
                         {{#if this.image}}
@@ -405,11 +447,11 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="days-grid days-grid-2">
                 {{#each days}}
                 <div class="day-card" style="--meal-count: {{this.meals.length}}">
-                    <div class="day-header">DEN {{this.den}}</div>
+                    <div class="day-header">{{{../calendarIcon}}}DEN {{this.den}}</div>
                     <div class="day-card-content">
                     {{#each this.meals}}
                     <div class="meal-section">
-                        <div class="meal-type-label">{{this.typeLabel}}</div>
+                        <div class="meal-type-label">{{#if this.iconSvg}}<span class="meal-type-icon">{{{this.iconSvg}}}</span>{{/if}}{{this.typeLabel}}</div>
                         {{#if this.title}}
                         <div class="meal-content">
                             {{#if this.image}}
@@ -446,11 +488,11 @@ const htmlTemplate = `<!DOCTYPE html>
             <div class="days-grid days-grid-2">
                 {{#each days}}
                 <div class="day-card" style="--meal-count: {{this.meals.length}}">
-                    <div class="day-header">DEN {{this.den}}</div>
+                    <div class="day-header">{{{../calendarIcon}}}DEN {{this.den}}</div>
                     <div class="day-card-content">
                     {{#each this.meals}}
                     <div class="meal-section">
-                        <div class="meal-type-label">{{this.typeLabel}}</div>
+                        <div class="meal-type-label">{{#if this.iconSvg}}<span class="meal-type-icon">{{{this.iconSvg}}}</span>{{/if}}{{this.typeLabel}}</div>
                         {{#if this.title}}
                         <div class="meal-content">
                             {{#if this.image}}
@@ -510,7 +552,7 @@ const htmlTemplate = `<!DOCTYPE html>
     </div>
     
     <script>
-        // Synchronize heights of meal sections and day cards
+        // Synchronize heights of meal sections within the same page only
         function synchronizeMealSectionHeights() {
             const grid = document.querySelector('.days-grid');
             if (!grid) return;
@@ -520,16 +562,35 @@ const htmlTemplate = `<!DOCTYPE html>
             
             // Skip synchronization for text-only layouts to prevent large gaps
             const isTextOnly = document.querySelector('.page.text-only');
-            if (isTextOnly) return;
+            if (isTextOnly) {
+                // For text-only layouts, group cards by page (2 cards per page)
+                const cardsPerPage = 2;
+                for (let pageStart = 0; pageStart < dayCards.length; pageStart += cardsPerPage) {
+                    const pageCards = dayCards.slice(pageStart, pageStart + cardsPerPage);
+                    synchronizeCardGroupHeights(pageCards);
+                }
+                return;
+            }
             
-            // Get max number of meal sections in any day card
-            const maxMealSections = Math.max(...dayCards.map(card => 
+            // For standard layouts, group by visual rows (2 cards per row)
+            const cardsPerRow = 2;
+            for (let rowStart = 0; rowStart < dayCards.length; rowStart += cardsPerRow) {
+                const rowCards = dayCards.slice(rowStart, rowStart + cardsPerRow);
+                synchronizeCardGroupHeights(rowCards);
+            }
+        }
+        
+        function synchronizeCardGroupHeights(cardGroup) {
+            if (cardGroup.length <= 1) return;
+            
+            // Get max number of meal sections in this group
+            const maxMealSections = Math.max(...cardGroup.map(card => 
                 card.querySelectorAll('.meal-section').length
             ));
             
-            // For each meal section position (0, 1, 2...), synchronize heights
+            // For each meal section position (0, 1, 2...), synchronize heights within this group only
             for (let i = 0; i < maxMealSections; i++) {
-                const sectionsAtPosition = dayCards.map(card => {
+                const sectionsAtPosition = cardGroup.map(card => {
                     const sections = card.querySelectorAll('.meal-section');
                     return sections[i] || null;
                 }).filter(section => section !== null);
@@ -609,7 +670,7 @@ function determineLayoutType(templateType, daysCount) {
     return 'standard';
 }
 
-function transformDataForTemplate(menuData) {
+async function transformDataForTemplate(menuData) {
     const dayGroups = {};
     
     const templateType = menuData[0]?.['Template'] || '5x-O';
@@ -733,6 +794,24 @@ function transformDataForTemplate(menuData) {
     
     const firstRecord = menuData[0] || {};
     
+    // Load SVG icons for meal types
+    const mealTypeIcons = {};
+    for (const mealType of activeMealTypes) {
+        const svgIcon = await loadSvgIcon(mealType);
+        if (svgIcon) {
+            mealTypeIcons[mealType] = svgIcon;
+        }
+    }
+    
+    // Add icons to meals
+    days.forEach(day => {
+        day.meals.forEach(meal => {
+            if (mealTypeIcons[meal.type]) {
+                meal.iconSvg = mealTypeIcons[meal.type];
+            }
+        });
+    });
+    
     return {
         klient: firstRecord['Klient'] || 'Klient',
         idCircuit: firstRecord['ID Circuit'] || '',
@@ -742,7 +821,8 @@ function transformDataForTemplate(menuData) {
         days: days,
         daysCount: daysCount,
         templateType: templateType,
-        layoutType: layoutType
+        layoutType: layoutType,
+        calendarIcon: calendarIconSvg
     };
 }
 
@@ -756,7 +836,7 @@ async function generatePDF(idCircuit) {
             throw new Error(`No data found for ID Circuit: ${idCircuit}`);
         }
         
-        const templateData = transformDataForTemplate(menuData);
+        const templateData = await transformDataForTemplate(menuData);
         console.log(`Layout type: ${templateData.layoutType} for template ${templateData.templateType}`);
         console.log(`Template: ${templateData.templateType}`);
         console.log(`Days: ${templateData.daysCount}`);

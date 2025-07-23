@@ -131,6 +131,14 @@
             color: #555; 
             border-bottom: 1px solid #eee;
             font-size: 7pt;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .day-header-icon {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
         }
         
         /* Big cards layout (single meal type) - much bigger */
@@ -171,6 +179,15 @@
             font-weight: 500; 
             margin-bottom: 6px; 
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-left: 8px;
+        }
+        .meal-type-icon {
+            height: 8pt;
+            width: auto;
+            flex-shrink: 0;
         }
         .meal-content { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
         .meal-image { 
@@ -332,7 +349,8 @@
             .seven-day .days-grid-2 .day-card:nth-child(n+5) {
                 margin-top: 0;
             }
-            .text-only .days-grid .day-card:nth-child(n+3) {
+            /* Text-only layouts: start new page after every 2 cards */
+            .text-only .days-grid .day-card:nth-child(n+3):nth-child(odd) {
                 margin-top: 35mm;
             }
             /* Constrain content to single page for short layouts only */
@@ -362,10 +380,28 @@
             <!-- Standard layout - multiple meal types with images -->
             <div class="days-grid days-grid-2">
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 1</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 1</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/011.png" alt="Vepřové výpečky se zelím, bramborový knedlík" class="meal-image">
                             <div class="meal-details">
@@ -376,10 +412,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 2</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 2</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/013.png" alt="Trhané vepřové s pečenou mrkví, šťouch. brambory" class="meal-image">
                             <div class="meal-details">
@@ -390,10 +444,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 3</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 3</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/002.png" alt="Hovězí maso se špenátem, bramborový knedlík" class="meal-image">
                             <div class="meal-details">
@@ -404,10 +476,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 4</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 4</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/016.png" alt="Kančí guláš, tyrolský knedlík" class="meal-image">
                             <div class="meal-details">
@@ -418,10 +508,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 5</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 5</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/017.png" alt="Vepřové výpečky se špenátem, bramborové halušky" class="meal-image">
                             <div class="meal-details">
@@ -432,10 +540,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 6</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 6</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/019.png" alt="Rýžové nudle s kuřecím masem" class="meal-image">
                             <div class="meal-details">
@@ -446,10 +572,28 @@
                     </div>
                 </div>
                 <div class="day-card" style="--meal-count: 1">
-                    <div class="day-header">DEN 7</div>
+                    <div class="day-header"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+</svg>DEN 7</div>
                     <div class="day-card-content">
                     <div class="meal-section">
-                        <div class="meal-type-label">Oběd</div>
+                        <div class="meal-type-label"><span class="meal-type-icon"><svg width="129" height="128" viewBox="0 0 129 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="16.25" y="16" width="96" height="96" rx="24" fill="#E6D1DF"/>
+<g opacity="0.55">
+<mask id="mask0_6288_12512" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="40" width="49" height="48">
+<path d="M87.5 87.25V40.75H41V87.25H87.5Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_6288_12512)">
+<path d="M78.1149 67.1875C78.1149 74.8504 71.9043 81.0625 64.2433 81.0625C56.5822 81.0625 50.3716 74.8504 50.3716 67.1875C50.3716 59.5245 56.5822 53.3125 64.2433 53.3125C71.9043 53.3125 78.1149 59.5245 78.1149 67.1875Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.2449 75.4375C59.6969 75.4375 55.9969 71.7365 55.9969 67.1875C55.9969 62.6385 59.6969 58.9375 64.2449 58.9375C68.7929 58.9375 72.4929 62.6385 72.4929 67.1875C72.4929 71.7365 68.7929 75.4375 64.2449 75.4375Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8431 78.9062V56.1252" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44.8434 56.125C43.0835 56.125 41.6567 54.6979 41.6567 52.9375C41.6567 52.9375 41.2825 46.9375 44.8434 46.9375C48.4043 46.9375 48.0302 52.9375 48.0302 52.9375C48.0302 54.6979 46.6034 56.125 44.8434 56.125Z" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M83.9276 79.1875V56.4064" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M86.8313 46.9375V53.3125C86.8313 54.8658 85.5725 56.125 84.0195 56.125C82.4666 56.125 81.2076 54.8658 81.2076 53.3125V46.9375" stroke="#FF7BA2" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+</span>Oběd</div>
                         <div class="meal-content">
                             <img src="https://raw.githubusercontent.com/komfi-health/meal-plans/main/img/meals/021.png" alt="Špagety s boloňskou" class="meal-image">
                             <div class="meal-details">
@@ -490,7 +634,7 @@
     </div>
     
     <script>
-        // Synchronize heights of meal sections and day cards
+        // Synchronize heights of meal sections within the same page only
         function synchronizeMealSectionHeights() {
             const grid = document.querySelector('.days-grid');
             if (!grid) return;
@@ -500,16 +644,35 @@
             
             // Skip synchronization for text-only layouts to prevent large gaps
             const isTextOnly = document.querySelector('.page.text-only');
-            if (isTextOnly) return;
+            if (isTextOnly) {
+                // For text-only layouts, group cards by page (2 cards per page)
+                const cardsPerPage = 2;
+                for (let pageStart = 0; pageStart < dayCards.length; pageStart += cardsPerPage) {
+                    const pageCards = dayCards.slice(pageStart, pageStart + cardsPerPage);
+                    synchronizeCardGroupHeights(pageCards);
+                }
+                return;
+            }
             
-            // Get max number of meal sections in any day card
-            const maxMealSections = Math.max(...dayCards.map(card => 
+            // For standard layouts, group by visual rows (2 cards per row)
+            const cardsPerRow = 2;
+            for (let rowStart = 0; rowStart < dayCards.length; rowStart += cardsPerRow) {
+                const rowCards = dayCards.slice(rowStart, rowStart + cardsPerRow);
+                synchronizeCardGroupHeights(rowCards);
+            }
+        }
+        
+        function synchronizeCardGroupHeights(cardGroup) {
+            if (cardGroup.length <= 1) return;
+            
+            // Get max number of meal sections in this group
+            const maxMealSections = Math.max(...cardGroup.map(card => 
                 card.querySelectorAll('.meal-section').length
             ));
             
-            // For each meal section position (0, 1, 2...), synchronize heights
+            // For each meal section position (0, 1, 2...), synchronize heights within this group only
             for (let i = 0; i < maxMealSections; i++) {
-                const sectionsAtPosition = dayCards.map(card => {
+                const sectionsAtPosition = cardGroup.map(card => {
                     const sections = card.querySelectorAll('.meal-section');
                     return sections[i] || null;
                 }).filter(section => section !== null);
