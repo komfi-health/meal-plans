@@ -122,7 +122,7 @@ const htmlTemplate = `<!DOCTYPE html>
             align-items: center; 
             margin-bottom: 16px; 
             padding-bottom: 8px; 
-            border-bottom: 2px solid #f0f0f0; 
+            border-bottom: 2px solid #E9DFD5; 
             background: white;
             z-index: 999;
             height: 20mm;
@@ -164,7 +164,7 @@ const htmlTemplate = `<!DOCTYPE html>
         
         /* Day cards - compact layout */
         .day-card { 
-            border: 1px solid #e0e0e0; 
+            border: 1px solid #E9DFD5; 
             border-radius: 16px; 
             overflow: hidden; 
             background: #fff;
@@ -182,7 +182,7 @@ const htmlTemplate = `<!DOCTYPE html>
             padding: 4px 16px; 
             font-weight: 700; 
             color: #555; 
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #E9DFD5;
             font-size: 7pt;
             display: flex;
             align-items: center;
@@ -220,7 +220,7 @@ const htmlTemplate = `<!DOCTYPE html>
         /* Standard cards layout - compact with minimal heights */
         .meal-section { 
             padding: 8px 12px; 
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #E9DFD5;
             display: flex;
             flex-direction: column;
         }
@@ -238,10 +238,13 @@ const htmlTemplate = `<!DOCTYPE html>
             padding-left: 0px;
         }
         .meal-type-icon {
-            width: 4px;
-            height: 4px;
+            width: 19px;
+            height: 19px;
             flex-shrink: 0;
             opacity: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .meal-content { display: flex; align-items: flex-start; gap: 16px; flex: 1; }
         .meal-image { 
@@ -256,9 +259,10 @@ const htmlTemplate = `<!DOCTYPE html>
         .meal-items { list-style: none; padding-left: 0; margin: 0 0 8px 0; }
         .meal-items li { font-size: 7pt; color: #666; line-height: 1.2; margin-bottom: 0px; font-weight: 400; }
         
-        /* Text-only layout - 2 columns with proper pagination */
+        /* Text-image-mix layout - flexible column layout */
         .text-image-mix .days-grid { 
-            grid-template-columns: repeat(2, 1fr) !important; 
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
         .text-image-mix .meal-section { 
@@ -319,7 +323,7 @@ const htmlTemplate = `<!DOCTYPE html>
             border-radius: 4px; 
             padding: 4px 8px; 
             margin-top: 4px;
-            border-left: 2px solid #ddd;
+            border-left: 2px solid #E9DFD5;
             max-width: 200px;
         }
         .instructions-label {
@@ -338,7 +342,7 @@ const htmlTemplate = `<!DOCTYPE html>
             bottom: 5mm; 
             left: 10mm; 
             right: 10mm; 
-            border-top: 1px solid #ddd; 
+            border-top: 1px solid #E9DFD5; 
             padding-top: 3mm; 
             font-size: 6pt;
             height: 25mm;
@@ -401,7 +405,7 @@ const htmlTemplate = `<!DOCTYPE html>
             padding: 6px 8px;
             background: #f8f8f8;
             border-radius: 3px;
-            border-left: 2px solid #ccc;
+            border-left: 2px solid #E9DFD5;
         }
         .footer-box h4 {
             margin: 0 0 2px 0;
@@ -443,21 +447,33 @@ const htmlTemplate = `<!DOCTYPE html>
                 max-height: none;
                 overflow: visible;
             }
-            /* Text-only pagination - force page breaks and margins */
-            .text-image-mix .days-grid .day-card:nth-child(3),
-            .text-image-mix .days-grid .day-card:nth-child(5),
-            .text-image-mix .days-grid .day-card:nth-child(7) {
-                page-break-before: always;
-                margin-top: 35mm;
+            /* Smart pagination - let browser handle page breaks naturally */
+            .days-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
             }
-            /* Add margin-top for even cards on new pages */
-            .text-image-mix .days-grid .day-card:nth-child(4),
-            .text-image-mix .days-grid .day-card:nth-child(6) {
-                margin-top: 35mm;
+            /* For layouts that need columns */
+            .standard .days-grid,
+            .big-cards .days-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
-            /* Image-only pagination - 6 cards per page for 7-day */
-            .image-only .days-grid .day-card:nth-child(7) {
-                page-break-before: always;
+            /* Keep cards together on same page if possible */
+            .day-card {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            /* Natural page flow with proper spacing after page break */
+            .day-card {
+                page-break-after: auto;
+            }
+            /* Ensure proper top margin on new pages */
+            @page :first {
+                margin-top: 45mm;
+            }
+            @page :left, @page :right {
                 margin-top: 35mm;
             }
         }
@@ -632,15 +648,9 @@ const htmlTemplate = `<!DOCTYPE html>
             const dayCards = Array.from(grid.querySelectorAll('.day-card'));
             if (dayCards.length === 0) return;
             
-            // Skip synchronization for text-image-mix layouts to prevent large gaps
+            // Skip synchronization for text-image-mix layouts to allow natural flow
             const isTextImageMix = document.querySelector('.page.text-image-mix');
             if (isTextImageMix) {
-                // For text-image-mix layouts, group cards by page (2 cards per page)
-                const cardsPerPage = 2;
-                for (let pageStart = 0; pageStart < dayCards.length; pageStart += cardsPerPage) {
-                    const pageCards = dayCards.slice(pageStart, pageStart + cardsPerPage);
-                    synchronizeCardGroupHeights(pageCards);
-                }
                 return;
             }
             
@@ -962,7 +972,7 @@ async function generatePDF(idCircuit) {
 }
 
 // Run with command line argument
-const idCircuit = process.argv[2] || 'E_27';
+const idCircuit = process.argv[2] || 'E_24';
 generatePDF(idCircuit)
     .then(filename => {
         console.log(`\n✅ PDF successfully generated: ${filename}`);
